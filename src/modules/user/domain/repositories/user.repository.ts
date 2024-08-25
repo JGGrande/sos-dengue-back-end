@@ -6,6 +6,7 @@ export interface UserRepository {
   cpfExists(cpf: string): Promise<boolean>;
   create({}: CreateUserDto): Promise<User>;
   findAll(): Promise<User[]>;
+  findById(id: number): Promise<User | null>;
 }
 
 export const UserRepositoryToken = Symbol('UserRepository');

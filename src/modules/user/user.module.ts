@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './infra/http/controller/user.controller';
 import { CreateUserService } from './application/services/create-user.service';
-import { DIContainer } from './infra/di/user.container';
 import { FindAllUserService } from './application/services/find-all-user.service';
+import { FindUserByIdService } from './application/services/find-user-by-id.service';
+import { DIContainer } from './infra/di/user.container';
+import { UserController } from './infra/http/controller/user.controller';
 
 @Module({
   imports: [ DIContainer ],
   controllers: [ UserController ],
   providers: [
     CreateUserService,
-    FindAllUserService
+    FindAllUserService,
+    FindUserByIdService
   ]
 })
 export class UserModule {}
