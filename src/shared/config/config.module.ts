@@ -17,7 +17,8 @@ const envSchema = z.object({
         .default("dev"),
     TZ: z.string().default("UTC"),
     PORT: z.coerce.number(),
-    DATABASE_URL: z.string()
+    DATABASE_URL: z.string(),
+    PASSWORD_SALT: z.coerce.number(),
 });
 
 export type Env = z.infer<typeof envSchema>;

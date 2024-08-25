@@ -22,7 +22,7 @@ async function bootstrap() {
   await app.listen(
     PORT, 
     '0.0.0.0', 
-    () => console.info(`Server on on port ${PORT}`)
+    () => console.info(`Server on in port ${PORT}`)
   );
 }
 bootstrap();
