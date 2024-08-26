@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, MaxLength, MinLength } from "class-validator";
+import { IsValidCPF } from "src/shared/decorators/is-valid-cpf.decorator";
 
 export class CreateUserDto {
   @IsString()
@@ -9,6 +10,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(11)
   @MaxLength(11)
+  @IsValidCPF()
   cpf: string;
 
   @IsEmail()
