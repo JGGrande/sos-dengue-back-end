@@ -5,8 +5,12 @@ export interface UserRepository {
   emailExists(email: string): Promise<boolean>;
   cpfExists(cpf: string): Promise<boolean>;
   create({}: CreateUserDto): Promise<User>;
+  update({}: User): Promise<User>;
+
   findAll(): Promise<User[]>;
   findById(id: number): Promise<User | null>;
+  findIdByEmail(email: string): Promise<{ id: number } | null>;
+  findIdByCpf(cpf: string): Promise<{ id: number } | null>;
 }
 
 export const UserRepositoryToken = Symbol('UserRepository');

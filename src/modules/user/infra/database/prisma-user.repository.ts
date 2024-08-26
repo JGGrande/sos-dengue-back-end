@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from '../../../../shared/prisma/prisma.service';
 import { CreateUserDto } from "../../application/dto/create-user.dto";
-import { UserRepository } from "../../domain/repositories/user.repository";
 import { User } from "../../domain/entities/user.entity";
+import { UserRepository } from "../../domain/repositories/user.repository";
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -28,8 +28,8 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   public async create(createUserDto: CreateUserDto): Promise<User> {
-    const userData = await this.prisma.user.create({ 
-      data: createUserDto 
+    const userData = await this.prisma.user.create({
+      data: createUserDto
     });
 
     const user = new User(userData);
@@ -49,6 +49,38 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     return user ? new User(user) : null;
+  }
+
+  public async findIdByEmail(email: string): Promise<{ id: number; } | null> {
+    const user = await this.prisma.user.findFirst({
+      where: { email },
+      select: { id: true },
+    });
+
+    return user;
+  }
+
+  public async findIdByCpf(cpf: string): Promise<{ id: number; } | null> {
+    const user = await this.prisma.user.findFirst({
+      where: { cpf },
+      select: { id: true },
+    });
+
+    return user;
+  }
+
+  public async update({ id, cpf, email, name }: User): Promise<User> {
+    const userData = await this.prisma.user.update({
+      where: { id },
+      data: {
+        name,
+        cpf
+      }
+    });
+
+    const userUpdated = new User(userData);
+
+    return userUpdated;
   }
 
 }
