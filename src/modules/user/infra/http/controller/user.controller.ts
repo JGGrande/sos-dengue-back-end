@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Put, Query, Req } from '@nestjs/common';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
 import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
 import { CreateUserService } from 'src/modules/user/application/services/create-user.service';
@@ -10,7 +10,9 @@ import { CreateUserPresent } from '../present/create-user.present';
 import { FindAllUserPresent } from '../present/find-all-user.present';
 import { FindUserByIdPresent } from '../present/find-user-by-id.present';
 import { UpdateUserPresent } from '../present/update-user.present';
-import { MailerService } from '@nestjs-modules/mailer';
+import { UpdateUserEmailService } from 'src/modules/user/application/services/update-user-email.service';
+import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
+import { VerifyUserEmailService } from 'src/modules/user/application/services/verify-user-email.service';
 
 @Controller('users')
 export class UserController {
@@ -19,7 +21,8 @@ export class UserController {
     private readonly findAllUserService: FindAllUserService,
     private readonly findUserByIdService: FindUserByIdService,
     private readonly updateUserService: UpdateUserService,
-    private readonly emailProvider: MailerService
+    private readonly updateUserEmailService: UpdateUserEmailService,
+    private readonly verifyUserEmailService: VerifyUserEmailService
   ) {}
 
   @Post()
@@ -54,12 +57,27 @@ export class UserController {
   }
 
   @Patch(":id/email")
-  public async updateEmail(@Body() data){
-    await this.emailProvider.sendMail({
-      to: data.email,
-      subject: "verify email",
-      context: { name: "João" },
-      template: "verify-email.template.hbs",
-    })
+  public async updateEmail(
+    @Req() request,
+    @ParamId() id: number,
+    @Body() bodyData: UpdateUserEmailDto
+  ){
+    const host = request.headers['x-forwarded-host'] || request.hostname;
+
+    await this.updateUserEmailService.execute({
+      id,
+      host,
+      ...bodyData
+    });
+  }
+
+
+  @Get("verify-email")
+  public async verifyEmail(@Query("token") token?: string) {
+    if(!token){
+      throw new BadRequestException("Token é obrigatório");
+    }
+
+    await this.verifyUserEmailService.execute(token);
   }
 }

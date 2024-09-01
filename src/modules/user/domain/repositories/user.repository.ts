@@ -4,8 +4,10 @@ import { User } from '../entities/user.entity';
 export interface UserRepository {
   emailExists(email: string): Promise<boolean>;
   cpfExists(cpf: string): Promise<boolean>;
+
   create({}: CreateUserDto): Promise<User>;
   update({}: User): Promise<User>;
+  updateEmail(id: number, newEmail: string): Promise<void>;
 
   findAll(): Promise<User[]>;
   findById(id: number): Promise<User | null>;

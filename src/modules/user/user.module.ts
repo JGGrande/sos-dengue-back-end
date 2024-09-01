@@ -5,6 +5,8 @@ import { FindUserByIdService } from './application/services/find-user-by-id.serv
 import { DIContainer } from './infra/di/user.container';
 import { UserController } from './infra/http/controller/user.controller';
 import { UpdateUserService } from './application/services/update-user.service';
+import { UpdateUserEmailService } from './application/services/update-user-email.service';
+import { VerifyUserEmailService } from './application/services/verify-user-email.service';
 
 @Module({
   imports: [ DIContainer ],
@@ -14,6 +16,8 @@ import { UpdateUserService } from './application/services/update-user.service';
     FindAllUserService,
     FindUserByIdService,
     UpdateUserService,
+    UpdateUserEmailService,
+    VerifyUserEmailService
   ]
 })
 export class UserModule {}

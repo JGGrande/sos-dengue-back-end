@@ -6,6 +6,8 @@ import { BcryptProvider } from "src/shared/providers/implementation/bcrypt.provi
 import { HashProviderToken } from "src/shared/providers/interface/hash.provider";
 import { UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { MailerModule } from "@nestjs-modules/mailer";
+import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
+import { Env } from "src/shared/config/config.module";
 
 const DatabaseProvider: Provider = {
   provide: UserRepositoryToken,
@@ -18,10 +20,22 @@ const HashProvider: Provider = {
   useClass: BcryptProvider,
 }
 
+const { VERIFY_EMAIL_TOKEN_SECRET, VERIFY_EMAIL_TOKEN_EXPIRES_IN } = process.env as Env;
+
+const VerifyEmailTokenOptions: JwtModuleOptions = {
+  global: true,
+  secret: VERIFY_EMAIL_TOKEN_SECRET,
+  signOptions: {
+    expiresIn: VERIFY_EMAIL_TOKEN_EXPIRES_IN,
+    subject: "verify-email"
+  }
+}
+
 @Module({
   imports: [
     PrismaModule,
-    MailerModule
+    MailerModule,
+    JwtModule.register(VerifyEmailTokenOptions),
   ],
   providers: [DatabaseProvider, HashProvider],
   exports: [DatabaseProvider, HashProvider],

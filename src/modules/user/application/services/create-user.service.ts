@@ -1,7 +1,6 @@
 import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { HashProvider, HashProviderToken } from "src/shared/providers/interface/hash.provider";
-import { Env } from "src/shared/config/config.module";
 import { User } from "../../domain/entities/user.entity";
 
 interface IRequest {
