@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 
 interface IRequest {
   id: number;
@@ -11,11 +12,19 @@ interface IRequest {
 @Injectable()
 export class UpdateUserEmailService {
   constructor(
+    @Inject(UserRepositoryToken)
+    private readonly userRepository: UserRepository,
     private readonly emailProvider: MailerService,
     private readonly jwtProvider: JwtService
   ){ }
 
   async execute({ id, host, newEmail }: IRequest): Promise<void> {
+    const user = await this.userRepository.findById(id);
+
+    if(!user){
+      throw new NotFoundException("Usuário não encontrado.");
+    }
+
     const tokenPayload = {
       id,
       newEmail
@@ -31,7 +40,7 @@ export class UpdateUserEmailService {
       to: newEmail,
       subject: "verify email",
       context: {
-        name: "João",
+        name: user.name,
         urlToVerify
       },
       template: "verify-email.template.hbs",
