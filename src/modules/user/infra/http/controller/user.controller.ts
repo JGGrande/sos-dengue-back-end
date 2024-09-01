@@ -1,15 +1,16 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Put } from '@nestjs/common';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
+import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
 import { CreateUserService } from 'src/modules/user/application/services/create-user.service';
 import { FindAllUserService } from 'src/modules/user/application/services/find-all-user.service';
+import { FindUserByIdService } from 'src/modules/user/application/services/find-user-by-id.service';
+import { UpdateUserService } from 'src/modules/user/application/services/update-user.service';
+import { ParamId } from 'src/shared/decorators/param-id.decorator';
 import { CreateUserPresent } from '../present/create-user.present';
 import { FindAllUserPresent } from '../present/find-all-user.present';
-import { FindUserByIdService } from 'src/modules/user/application/services/find-user-by-id.service';
-import { ParamId } from 'src/shared/decorators/param-id.decorator';
 import { FindUserByIdPresent } from '../present/find-user-by-id.present';
-import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
-import { UpdateUserService } from 'src/modules/user/application/services/update-user.service';
 import { UpdateUserPresent } from '../present/update-user.present';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('users')
 export class UserController {
@@ -17,7 +18,8 @@ export class UserController {
     private readonly createUserService: CreateUserService,
     private readonly findAllUserService: FindAllUserService,
     private readonly findUserByIdService: FindUserByIdService,
-    private readonly updateUserService: UpdateUserService
+    private readonly updateUserService: UpdateUserService,
+    private readonly emailProvider: MailerService
   ) {}
 
   @Post()
@@ -49,5 +51,15 @@ export class UserController {
     });
 
     return UpdateUserPresent.toHttpApp(user);
+  }
+
+  @Patch(":id/email")
+  public async updateEmail(@Body() data){
+    await this.emailProvider.sendMail({
+      to: data.email,
+      subject: "verify email",
+      context: { name: "João" },
+      template: "verify-email.template.hbs",
+    })
   }
 }
