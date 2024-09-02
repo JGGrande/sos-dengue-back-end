@@ -2,6 +2,7 @@ import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { HashProvider, HashProviderToken } from "src/shared/providers/interface/hash.provider";
 import { User } from "../../domain/entities/user.entity";
+import { ConfigService } from "@nestjs/config";
 
 interface IRequest {
   name: string;
@@ -16,7 +17,8 @@ export class CreateUserService {
     @Inject(UserRepositoryToken)
     private readonly userRepository: UserRepository,
     @Inject(HashProviderToken)
-    private readonly hashProvider: HashProvider
+    private readonly hashProvider: HashProvider,
+    private readonly configService: ConfigService
   ){}
 
   async execute({ name, cpf, email, password }:IRequest): Promise<User> {
@@ -32,7 +34,9 @@ export class CreateUserService {
       throw new ConflictException("CPF already exits.")
     }
 
-    const passwordHashed = await this.hashProvider.hash(password);
+    const salt = this.configService.get<number>("PASSWORD_SALT");
+
+    const passwordHashed = await this.hashProvider.hash(password, salt);
 
     const user = await this.userRepository.create({
       name,
