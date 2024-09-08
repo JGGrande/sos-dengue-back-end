@@ -13,6 +13,8 @@ export interface UserRepository {
   findById(id: number): Promise<User | null>;
   findIdByEmail(email: string): Promise<{ id: number } | null>;
   findIdByCpf(cpf: string): Promise<{ id: number } | null>;
+
+  softDelete(id: number): Promise<void>;
 }
 
 export const UserRepositoryToken = Symbol('UserRepository');

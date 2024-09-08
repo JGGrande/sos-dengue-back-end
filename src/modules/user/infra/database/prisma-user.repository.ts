@@ -90,4 +90,11 @@ export class PrismaUserRepository implements UserRepository {
       data: { email: newEmail }
     });
   }
+
+  public async softDelete(id: number): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { deletedAt: new Date() }
+    });
+  }
 }

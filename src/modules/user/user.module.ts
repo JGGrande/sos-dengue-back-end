@@ -7,6 +7,7 @@ import { UserController } from './infra/http/controller/user.controller';
 import { UpdateUserService } from './application/services/update-user.service';
 import { UpdateUserEmailService } from './application/services/update-user-email.service';
 import { VerifyUserEmailService } from './application/services/verify-user-email.service';
+import { DeleteUserService } from './application/services/delete-user.service';
 
 @Module({
   imports: [ DIContainer ],
@@ -17,7 +18,8 @@ import { VerifyUserEmailService } from './application/services/verify-user-email
     FindUserByIdService,
     UpdateUserService,
     UpdateUserEmailService,
-    VerifyUserEmailService
+    VerifyUserEmailService,
+    DeleteUserService
   ]
 })
 export class UserModule {}

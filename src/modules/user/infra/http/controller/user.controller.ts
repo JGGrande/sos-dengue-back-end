@@ -1,18 +1,19 @@
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Put, Query, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Patch, Post, Put, Query, Req } from '@nestjs/common';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
+import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
 import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
 import { CreateUserService } from 'src/modules/user/application/services/create-user.service';
+import { DeleteUserService } from 'src/modules/user/application/services/delete-user.service';
 import { FindAllUserService } from 'src/modules/user/application/services/find-all-user.service';
 import { FindUserByIdService } from 'src/modules/user/application/services/find-user-by-id.service';
+import { UpdateUserEmailService } from 'src/modules/user/application/services/update-user-email.service';
 import { UpdateUserService } from 'src/modules/user/application/services/update-user.service';
+import { VerifyUserEmailService } from 'src/modules/user/application/services/verify-user-email.service';
 import { ParamId } from 'src/shared/decorators/param-id.decorator';
 import { CreateUserPresent } from '../present/create-user.present';
 import { FindAllUserPresent } from '../present/find-all-user.present';
 import { FindUserByIdPresent } from '../present/find-user-by-id.present';
 import { UpdateUserPresent } from '../present/update-user.present';
-import { UpdateUserEmailService } from 'src/modules/user/application/services/update-user-email.service';
-import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
-import { VerifyUserEmailService } from 'src/modules/user/application/services/verify-user-email.service';
 
 @Controller('users')
 export class UserController {
@@ -22,7 +23,8 @@ export class UserController {
     private readonly findUserByIdService: FindUserByIdService,
     private readonly updateUserService: UpdateUserService,
     private readonly updateUserEmailService: UpdateUserEmailService,
-    private readonly verifyUserEmailService: VerifyUserEmailService
+    private readonly verifyUserEmailService: VerifyUserEmailService,
+    private readonly deleteUserService: DeleteUserService
   ) {}
 
   @Post()
@@ -71,7 +73,6 @@ export class UserController {
     });
   }
 
-
   @Get("verify-email")
   public async verifyEmail(@Query("token") token?: string) {
     if(!token){
@@ -79,5 +80,10 @@ export class UserController {
     }
 
     await this.verifyUserEmailService.execute(token);
+  }
+
+  @Delete(":id")
+  public async delete(@ParamId() id: number){
+    await this.deleteUserService.execute(id);
   }
 }
