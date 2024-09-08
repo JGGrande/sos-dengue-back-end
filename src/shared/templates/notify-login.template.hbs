@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerta de login</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .titulo {
+      font-family: 'Arial';
+    }
+    .sub-titulo {
+      font-family: 'Arial';
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="titulo">Alerta de login!</h1>
+
+    <h2 class="sub-titulo">Olá, {{ name }}</h2>
+
+    <h3 class="sub-titulo">Um novo login foi efetuado em sua conta em {{ ocurredAt }} Horário de Brasilia.</h3>
+  </div>
+</body>
+</html>

@@ -24,7 +24,9 @@ const envSchema = z.object({
   EMAIL_PROVIDER_PORT: z.coerce.number(),
   EMAIL_PROVIDER_HOST: z.string(),
   EMAIL_PROVIDER_USER: z.string(),
-  EMAIL_PROVIDER_PASSWORD: z.string()
+  EMAIL_PROVIDER_PASSWORD: z.string(),
+  AUTH_TOKEN_SECRET: z.string(),
+  AUTH_TOKEN_EXPIRES_IN: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
