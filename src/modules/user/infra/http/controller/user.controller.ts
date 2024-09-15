@@ -10,10 +10,10 @@ import { UpdateUserEmailService } from 'src/modules/user/application/services/up
 import { UpdateUserService } from 'src/modules/user/application/services/update-user.service';
 import { VerifyUserEmailService } from 'src/modules/user/application/services/verify-user-email.service';
 import { ParamId } from 'src/shared/decorators/param-id.decorator';
-import { CreateUserPresent } from '../present/create-user.present';
-import { FindAllUserPresent } from '../present/find-all-user.present';
-import { FindUserByIdPresent } from '../present/find-user-by-id.present';
-import { UpdateUserPresent } from '../present/update-user.present';
+import { CreateUserPresent } from '../presenter/create-user.presenter';
+import { FindAllUserPresent } from '../presenter/find-all-user.presenter';
+import { FindUserByIdPresent } from '../presenter/find-user-by-id.presenter';
+import { UpdateUserPresent } from '../presenter/update-user.presenter';
 
 @Controller('users')
 export class UserController {
@@ -31,21 +31,21 @@ export class UserController {
   public async create(@Body() createUserDto: CreateUserByRequestDto) {
     const user = await this.createUserService.execute(createUserDto);
 
-    return CreateUserPresent.toHttpApp(user);
+    return CreateUserPresent.toHttpResponse(user);
   }
 
   @Get()
   public async findAll() {
     const users = await this.findAllUserService.execute();
 
-    return FindAllUserPresent.toHttpApp(users);
+    return FindAllUserPresent.toHttpResponse(users);
   }
 
   @Get(":id")
   public async findById(@ParamId() id: number) {
     const user = await this.findUserByIdService.execute(id);
 
-    return FindUserByIdPresent.toHttpApp(user);
+    return FindUserByIdPresent.toHttpResponse(user);
   }
 
   @Put(":id")
@@ -55,7 +55,7 @@ export class UserController {
       ...bodyData
     });
 
-    return UpdateUserPresent.toHttpApp(user);
+    return UpdateUserPresent.toHttpResponse(user);
   }
 
   @Patch(":id/email")

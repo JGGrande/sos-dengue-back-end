@@ -1,6 +1,5 @@
 import { Module, Provider, Scope } from "@nestjs/common";
 import { PrismaUserRepository } from "../database/prisma-user.repository";
-import { PrismaService } from '../../../../shared/prisma/prisma.service';
 import { PrismaModule } from "src/shared/prisma/prisma.module";
 import { BcryptProvider } from "src/shared/providers/implementation/bcrypt.provider";
 import { HashProviderToken } from "src/shared/providers/interface/hash.provider";

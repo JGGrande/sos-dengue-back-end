@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from './shared/config/config.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { ConfigModule } from './shared/config/config.module';
       }),
       inject: [ ConfigService ],
     }),
-    UserModule
+    UserModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
