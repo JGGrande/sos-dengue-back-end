@@ -3,8 +3,10 @@ import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserRepository, UserRepositoryToken } from "src/modules/user/domain/repositories/user.repository";
 import { HashProvider, HashProviderToken } from "src/shared/providers/interface/hash.provider";
+import { IUserRefreshTokenRepository, UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-refresh-token.repository";
+import { Env } from "src/shared/config/config.module";
 
-interface IRequest {
+type Request = {
   email: string;
   password: string;
 }
@@ -14,13 +16,15 @@ export class AuthUserService {
   constructor(
     @Inject(UserRepositoryToken)
     private readonly userRepository: UserRepository,
+    @Inject(UserRefreshTokenRepositoryToken)
+    private readonly userRefreshTokenRepository: IUserRefreshTokenRepository,
     private readonly emailProvider: MailerService,
     private readonly jwtService: JwtService,
     @Inject(HashProviderToken)
     private readonly hashProvider: HashProvider
   ){ }
 
-  async execute({ email, password }: IRequest){
+  async execute({ email, password }: Request){
     const user = await this.userRepository.findByEmail(email);
 
     if(!user){
@@ -35,7 +39,23 @@ export class AuthUserService {
 
     const tokenPayload = { id: user.id };
 
-    const token = await this.jwtService.signAsync(tokenPayload);
+    const token = this.jwtService.sign(tokenPayload);
+
+    const { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_EXPIRES_IN } = process.env as Env;
+
+    const refreshToken = this.jwtService.sign(
+      tokenPayload,
+      {
+        secret: REFRESH_TOKEN_SECRET,
+        expiresIn: REFRESH_TOKEN_EXPIRES_IN
+      }
+    );
+
+    await this.userRefreshTokenRepository.save({
+      userId: user.id,
+      token: refreshToken,
+      expiresIn: new Date(Date.now() + parseInt(REFRESH_TOKEN_EXPIRES_IN) * 1000)
+    });
 
     const ocurredAt = new Intl.DateTimeFormat('pt-BR', {
       dateStyle: 'long',
@@ -43,7 +63,7 @@ export class AuthUserService {
       timeZone: 'America/Sao_Paulo',
     }).format(new Date());
 
-    await this.emailProvider.sendMail({
+    this.emailProvider.sendMail({
       to: email,
       subject: "Login",
       context: {
@@ -53,6 +73,6 @@ export class AuthUserService {
       template: "notify-login.template.hbs",
     });
 
-    return { user, token };
+    return { user, token, refreshToken };
   }
 }
