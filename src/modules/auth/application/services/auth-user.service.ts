@@ -63,7 +63,7 @@ export class AuthUserService {
       timeZone: 'America/Sao_Paulo',
     }).format(new Date());
 
-    this.emailProvider.sendMail({
+    await this.emailProvider.sendMail({
       to: email,
       subject: "Login",
       context: {

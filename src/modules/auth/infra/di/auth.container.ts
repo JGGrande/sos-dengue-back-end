@@ -7,12 +7,19 @@ import { Env } from "src/shared/config/config.module";
 import { PrismaModule } from "src/shared/prisma/prisma.module";
 import { BcryptProvider } from "src/shared/providers/implementation/bcrypt.provider";
 import { HashProviderToken } from "src/shared/providers/interface/hash.provider";
+import { UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-refresh-token.repository";
+import { PrismaUserRefreshTokenRepository } from "../database/prisma-user-refresh-token.repository";
 
 const UserDatabaseProvider: Provider = {
   provide: UserRepositoryToken,
   scope: Scope.REQUEST,
   useClass: PrismaUserRepository,
 };
+
+const UserRefreshTokenProvider: Provider = {
+  provide: UserRefreshTokenRepositoryToken,
+  useClass: PrismaUserRefreshTokenRepository,
+}
 
 const HashProvider: Provider = {
   provide: HashProviderToken,
@@ -39,7 +46,7 @@ const AuthTokenOptions: JwtModuleOptions = {
     MailerModule,
     JwtModule.register(AuthTokenOptions),
   ],
-  providers: [ UserDatabaseProvider, HashProvider ],
-  exports: [ UserDatabaseProvider, HashProvider ],
+  providers: [ UserDatabaseProvider, HashProvider, UserRefreshTokenProvider ],
+  exports: [ UserDatabaseProvider, HashProvider, UserRefreshTokenProvider ],
 })
 export class DIContainer { }
