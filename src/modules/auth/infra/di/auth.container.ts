@@ -9,6 +9,8 @@ import { BcryptProvider } from "src/shared/providers/implementation/bcrypt.provi
 import { HashProviderToken } from "src/shared/providers/interface/hash.provider";
 import { UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-refresh-token.repository";
 import { PrismaUserRefreshTokenRepository } from "../database/prisma-user-refresh-token.repository";
+import { DateProviderToken } from "src/shared/providers/interface/date.provider";
+import { DateFnsProvider } from "src/shared/providers/implementation/date-fns.provider";
 
 const UserDatabaseProvider: Provider = {
   provide: UserRepositoryToken,
@@ -24,6 +26,11 @@ const UserRefreshTokenProvider: Provider = {
 const HashProvider: Provider = {
   provide: HashProviderToken,
   useClass: BcryptProvider,
+}
+
+const DateProvider: Provider = {
+  provide: DateProviderToken,
+  useClass: DateFnsProvider
 }
 
 const {
@@ -46,7 +53,7 @@ const AuthTokenOptions: JwtModuleOptions = {
     MailerModule,
     JwtModule.register(AuthTokenOptions),
   ],
-  providers: [ UserDatabaseProvider, HashProvider, UserRefreshTokenProvider ],
-  exports: [ UserDatabaseProvider, HashProvider, UserRefreshTokenProvider ],
+  providers: [ UserDatabaseProvider, HashProvider, DateProvider, UserRefreshTokenProvider ],
+  exports: [ UserDatabaseProvider, HashProvider, DateProvider, UserRefreshTokenProvider ],
 })
 export class DIContainer { }

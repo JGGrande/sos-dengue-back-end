@@ -5,6 +5,7 @@ import { UserRepository, UserRepositoryToken } from "src/modules/user/domain/rep
 import { HashProvider, HashProviderToken } from "src/shared/providers/interface/hash.provider";
 import { IUserRefreshTokenRepository, UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-refresh-token.repository";
 import { Env } from "src/shared/config/config.module";
+import { DateProviderToken, IDateProvider } from "src/shared/providers/interface/date.provider";
 
 type Request = {
   email: string;
@@ -21,7 +22,9 @@ export class AuthUserService {
     private readonly emailProvider: MailerService,
     private readonly jwtService: JwtService,
     @Inject(HashProviderToken)
-    private readonly hashProvider: HashProvider
+    private readonly hashProvider: HashProvider,
+    @Inject(DateProviderToken)
+    private readonly dateProvider: IDateProvider,
   ){ }
 
   async execute({ email, password }: Request){
@@ -43,6 +46,8 @@ export class AuthUserService {
 
     const { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_EXPIRES_IN } = process.env as Env;
 
+    const { dateNowPlusDays } = this.dateProvider;
+
     const refreshToken = this.jwtService.sign(
       tokenPayload,
       {
@@ -51,10 +56,12 @@ export class AuthUserService {
       }
     );
 
+    const expiresIn = dateNowPlusDays(+REFRESH_TOKEN_EXPIRES_IN.replace('d',''));
+
     await this.userRefreshTokenRepository.save({
       userId: user.id,
       token: refreshToken,
-      expiresIn: new Date(Date.now() + parseInt(REFRESH_TOKEN_EXPIRES_IN) * 1000)
+      expiresIn
     });
 
     const ocurredAt = new Intl.DateTimeFormat('pt-BR', {

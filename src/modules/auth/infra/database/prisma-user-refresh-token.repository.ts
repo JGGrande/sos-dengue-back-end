@@ -31,10 +31,11 @@ export class PrismaUserRefreshTokenRepository implements IUserRefreshTokenReposi
     return refreshToken;
   }
 
-  public async findByUserId(userId: number): Promise<UserRefreshToken | null> {
+  public async findByUserIdAndToken(userId: number, token: string): Promise<UserRefreshToken | null> {
     const refreshTokenData = await this.prisma.userRefreshToken.findFirst({
       where: {
-        userId
+        userId,
+        token
       }
     });
 
