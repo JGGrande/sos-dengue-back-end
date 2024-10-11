@@ -1,14 +1,14 @@
 {
   "name": "sos-dengue-back-end",
   "version": "0.0.1",
-  "description": "Final project of the internet systems course at Unialfa College",
+  "description": "Final project of the internet systems course at UniAlfa College",
   "author": "João Gabriel Grande",
   "private": true,
   "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "npx prisma generate && npx prisma migrate deploy && node dist/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
