@@ -4,12 +4,18 @@ import { JwtService } from "@nestjs/jwt";
 import { UserRepository, UserRepositoryToken } from "src/modules/user/domain/repositories/user.repository";
 import { HashProvider, HashProviderToken } from "src/shared/providers/interface/hash.provider";
 import { IUserRefreshTokenRepository, UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-refresh-token.repository";
-import { Env } from "src/shared/config/config.module";
 import { DateProviderToken, IDateProvider } from "src/shared/providers/interface/date.provider";
+import { ConfigService } from "@nestjs/config";
 
 type Request = {
-  email: string;
+  cpf: string;
   password: string;
+  deviceInfo: {
+    osName: string;
+    osVersion: string;
+    modelName: string;
+    androidId: string;
+  }
 }
 
 @Injectable()
@@ -20,6 +26,7 @@ export class AuthUserService {
     @Inject(UserRefreshTokenRepositoryToken)
     private readonly userRefreshTokenRepository: IUserRefreshTokenRepository,
     private readonly emailProvider: MailerService,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     @Inject(HashProviderToken)
     private readonly hashProvider: HashProvider,
@@ -27,24 +34,25 @@ export class AuthUserService {
     private readonly dateProvider: IDateProvider,
   ){ }
 
-  async execute({ email, password }: Request){
-    const user = await this.userRepository.findByEmail(email);
+  async execute({ cpf, password, deviceInfo }: Request){
+    const user = await this.userRepository.findByCpf(cpf);
 
     if(!user){
-      throw new BadRequestException("Usuário ou senha inválidos!");
+      throw new BadRequestException("CPF ou senha inválidos.");
     }
 
     const passwordMatch = await this.hashProvider.compare(password, user.password);
 
     if(!passwordMatch){
-      throw new BadRequestException("Usuário ou senha inválidos!");
+      throw new BadRequestException("CPF ou senha inválidos.");
     }
 
     const tokenPayload = { id: user.id };
 
     const token = this.jwtService.sign(tokenPayload);
 
-    const { REFRESH_TOKEN_SECRET, REFRESH_TOKEN_EXPIRES_IN } = process.env as Env;
+    const REFRESH_TOKEN_SECRET = this.configService.get<string>("REFRESH_TOKEN_SECRET");
+    const REFRESH_TOKEN_EXPIRES_IN = this.configService.get<string>("REFRESH_TOKEN_EXPIRES_IN");
 
     const { dateNowPlusDays } = this.dateProvider;
 
@@ -56,7 +64,8 @@ export class AuthUserService {
       }
     );
 
-    const expiresIn = dateNowPlusDays(+REFRESH_TOKEN_EXPIRES_IN.replace('d',''));
+    const refreshTokenExpiresInOnNumberFormat = +REFRESH_TOKEN_EXPIRES_IN.replace('d','');
+    const expiresIn = dateNowPlusDays(refreshTokenExpiresInOnNumberFormat);
 
     await this.userRefreshTokenRepository.save({
       userId: user.id,
@@ -71,11 +80,12 @@ export class AuthUserService {
     }).format(new Date());
 
     await this.emailProvider.sendMail({
-      to: email,
+      to: user.email,
       subject: "Login",
       context: {
         name: user.name,
-        ocurredAt: ocurredAt
+        ocurredAt: ocurredAt,
+        deviceInfo: deviceInfo
       },
       template: "notify-login.template.hbs",
     });

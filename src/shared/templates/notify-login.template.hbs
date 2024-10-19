@@ -3,29 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alerta de login</title>
+  <title>Alerta de Segurança - Novo Login</title>
   <style>
     body {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
     }
     .titulo {
-      font-family: 'Arial';
+      font-size: 24px;
+      color: #333333;
+      margin-bottom: 15px;
     }
     .sub-titulo {
-      font-family: 'Arial';
+      font-size: 18px;
+      color: #555555;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 16px;
+      color: #666666;
+      line-height: 1.6;
+    }
+    strong {
+      color: #333333;
+    }
+    .botao {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .botao:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 class="titulo">Alerta de login!</h1>
+    <h1 class="titulo">Alerta de Segurança - Novo Login Detectado</h1>
 
-    <h2 class="sub-titulo">Olá, {{ name }}</h2>
+    <h2 class="sub-titulo">Olá, {{ name }},</h2>
 
-    <h3 class="sub-titulo">Um novo login foi efetuado em sua conta em {{ ocurredAt }} Horário de Brasilia.</h3>
+    <p>Identificamos um novo login em sua conta no dia <strong>{{ ocurredAt }}</strong> (Horário de Brasília).</p>
+
+    <p><strong>Detalhes do dispositivo:</strong></p>
+    <ul>
+      <li>Modelo: {{ deviceInfo.modelName }}</li>
+      <li>Sistema Operacional: {{ deviceInfo.osName }} {{ deviceInfo.osVersion }}</li>
+    </ul>
+
+    <p>Se foi você que realizou este login, não é necessária nenhuma ação adicional.</p>
+
+    <p>Porém, se você não reconhece esta atividade, recomendamos que tome as seguintes medidas imediatamente:</p>
+    <ul>
+      <li>Troque sua senha de acesso;</li>
+      <li>Entre em contato com nosso suporte clicando no botão abaixo.</li>
+    </ul>
+
+    <a href="mailto:suporte@sosdengue.app" class="botao">Entrar em Contato com o Suporte</a>
+
+    <p style="margin-top: 20px;">Atenciosamente,<br>A equipe SOS Dengue</p>
   </div>
 </body>
 </html>

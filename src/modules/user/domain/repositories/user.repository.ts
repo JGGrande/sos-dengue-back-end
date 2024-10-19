@@ -11,7 +11,7 @@ export interface UserRepository {
 
   findAll(): Promise<User[]>;
   findById(id: number): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
+  findByCpf(cpf: string): Promise<User | null >;
   findIdByEmail(email: string): Promise<{ id: number } | null>;
   findIdByCpf(cpf: string): Promise<{ id: number } | null>;
 

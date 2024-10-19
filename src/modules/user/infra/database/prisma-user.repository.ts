@@ -51,9 +51,9 @@ export class PrismaUserRepository implements UserRepository {
     return user ? new User(user) : null;
   }
 
-  public async findByEmail(email: string): Promise<User | null> {
+  public async findByCpf(cpf: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
-      where: { email }
+      where: { cpf }
     });
 
     return user ? new User(user) : null;
