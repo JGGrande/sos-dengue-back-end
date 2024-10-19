@@ -65,10 +65,13 @@ export class UserController {
     @Body() bodyData: UpdateUserEmailDto
   ){
     const host = request.headers['x-forwarded-host'] || request.hostname;
+    const protocol = request.headers['x-forwarded-proto'] || request.protocol;
+
 
     await this.updateUserEmailService.execute({
       id,
       host,
+      protocol,
       ...bodyData
     });
   }
