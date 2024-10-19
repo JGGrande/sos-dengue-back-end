@@ -30,7 +30,7 @@ export class RecoverUserPasswordService {
     const tokenPayload = { id: user.id };
     const EMAIL_TOKEN_SECRET = this.configService.get<string>("VERIFY_EMAIL_TOKEN_SECRET");
     const EMAIL_TOKEN_EXPIRES_IN = this.configService.get<string>("VERIFY_EMAIL_TOKEN_EXPIRES_IN");
-
+    console.debug({ EMAIL_TOKEN_SECRET })
     const token = this.jwtService.sign(
       tokenPayload,
       {

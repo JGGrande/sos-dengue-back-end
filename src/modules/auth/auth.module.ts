@@ -4,6 +4,7 @@ import { AuthController } from "./infra/http/controllers/auth.controller";
 import { AuthUserService } from "./application/services/auth-user.service";
 import { RefreshTokenUserService } from "./application/services/refresh-token-user.service";
 import { RecoverUserPasswordService } from "./application/services/recover-user-password.service";
+import { ChangeUserPasswordService } from "./application/services/change-user-password.service";
 
 @Module({
   imports: [ DIContainer ],
@@ -11,7 +12,8 @@ import { RecoverUserPasswordService } from "./application/services/recover-user-
   providers: [
     AuthUserService,
     RefreshTokenUserService,
-    RecoverUserPasswordService
+    RecoverUserPasswordService,
+    ChangeUserPasswordService
   ],
 })
 export class AuthModule {}

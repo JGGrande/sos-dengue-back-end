@@ -8,6 +8,7 @@ export interface UserRepository {
   create({}: CreateUserDto): Promise<User>;
   update({}: User): Promise<User>;
   updateEmail(id: number, newEmail: string): Promise<void>;
+  updatePassword(id: number, newPassword: string): Promise<void>;
 
   findAll(): Promise<User[]>;
   findById(id: number): Promise<User | null>;
