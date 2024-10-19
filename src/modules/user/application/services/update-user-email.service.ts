@@ -7,6 +7,7 @@ interface IRequest {
   id: number;
   newEmail: string;
   host: string;
+  protocol: string;
 }
 
 @Injectable()
@@ -18,7 +19,7 @@ export class UpdateUserEmailService {
     private readonly jwtProvider: JwtService
   ){ }
 
-  async execute({ id, host, newEmail }: IRequest): Promise<void> {
+  async execute({ id, host, newEmail, protocol }: IRequest): Promise<void> {
     const user = await this.userRepository.findById(id);
 
     if(!user){
@@ -34,7 +35,7 @@ export class UpdateUserEmailService {
 
     const encodedToken = encodeURIComponent(token);
 
-    const urlToVerify = `http://${host}/api/users/verify-email?token=${encodedToken}`;
+    const urlToVerify = `${protocol}://${host}/api/users/verify-email?token=${encodedToken}`;
 
     await this.emailProvider.sendMail({
       to: newEmail,

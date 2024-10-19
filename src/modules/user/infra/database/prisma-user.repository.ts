@@ -51,6 +51,14 @@ export class PrismaUserRepository implements UserRepository {
     return user ? new User(user) : null;
   }
 
+  public async findByCpf(cpf: string): Promise<User | null> {
+    const user = await this.prisma.user.findFirst({
+      where: { cpf }
+    });
+
+    return user ? new User(user) : null;
+  }
+
   public async findByEmail(email: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: { email }
@@ -96,6 +104,13 @@ export class PrismaUserRepository implements UserRepository {
     await this.prisma.user.update({
       where: { id },
       data: { email: newEmail }
+    });
+  }
+
+  public async updatePassword(id: number, newPassword: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { password: newPassword }
     });
   }
 
