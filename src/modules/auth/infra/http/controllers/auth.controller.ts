@@ -52,7 +52,7 @@ export class AuthController {
   @Get("user/change-password")
   @Render("change-user-password.template.hbs")
   public async renderChangePasswordView(
-    @Query() token: string
+    @Query("token") token: string
   ){
     const { VERIFY_EMAIL_TOKEN_SECRET } = process.env as Env
 
@@ -64,7 +64,9 @@ export class AuthController {
       });
 
       isTokenValid = true;
-    }catch { }
+    }catch (error){
+      console.error(error);
+    }
 
     const hasError = !isTokenValid;
 
