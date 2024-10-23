@@ -64,9 +64,7 @@ export class AuthController {
       });
 
       isTokenValid = true;
-    }catch (error){
-      console.error(error);
-    }
+    }catch { }
 
     const hasError = !isTokenValid;
 
