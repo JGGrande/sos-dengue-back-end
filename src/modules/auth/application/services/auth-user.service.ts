@@ -1,5 +1,5 @@
 import { MailerService } from "@nestjs-modules/mailer";
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserRepository, UserRepositoryToken } from "src/modules/user/domain/repositories/user.repository";
 import { HashProvider, HashProviderToken } from "src/shared/providers/interface/hash.provider";
@@ -38,13 +38,13 @@ export class AuthUserService {
     const user = await this.userRepository.findByCpf(cpf);
 
     if(!user){
-      throw new BadRequestException("CPF ou senha inválidos.");
+      throw new NotFoundException("CPF ou senha inválidos.");
     }
 
     const passwordMatch = await this.hashProvider.compare(password, user.password);
 
     if(!passwordMatch){
-      throw new BadRequestException("CPF ou senha inválidos.");
+      throw new NotFoundException("CPF ou senha inválidos.");
     }
 
     const tokenPayload = { id: user.id };

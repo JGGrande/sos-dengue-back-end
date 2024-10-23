@@ -29,9 +29,7 @@ export class RefreshTokenUserService {
         secret: REFRESH_TOKEN_SECRET,
         ignoreExpiration: true
       });
-    } catch(err){
-      console.error(err);
-    }
+    } catch {}
 
     if (!decoded) {
       throw new UnauthorizedException("Token inválido!");
@@ -42,7 +40,7 @@ export class RefreshTokenUserService {
     const userRefreshToken = await this.userRefreshTokenRepository.findByUserIdAndToken(userId, refreshToken);
 
     if (!userRefreshToken) {
-      throw new UnauthorizedException("Token inválido!");
+      throw new UnauthorizedException("Token inválido");
     }
 
     const tokenPayload = { id: userId };

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Patch, Post, Put, Query, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
 import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
 import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
@@ -14,7 +14,10 @@ import { CreateUserPresent } from '../presenter/create-user.presenter';
 import { FindAllUserPresent } from '../presenter/find-all-user.presenter';
 import { FindUserByIdPresent } from '../presenter/find-user-by-id.presenter';
 import { UpdateUserPresent } from '../presenter/update-user.presenter';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { Public } from 'src/shared/decorators/public.decorator';
 
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
   constructor(
@@ -27,6 +30,7 @@ export class UserController {
     private readonly deleteUserService: DeleteUserService
   ) {}
 
+  @Public()
   @Post()
   public async create(@Body() createUserDto: CreateUserByRequestDto) {
     const user = await this.createUserService.execute(createUserDto);
@@ -76,6 +80,7 @@ export class UserController {
     });
   }
 
+  @Public()
   @Get("verify-email")
   public async verifyEmail(@Query("token") token?: string) {
     if(!token){
