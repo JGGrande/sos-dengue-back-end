@@ -6,6 +6,7 @@ import { join } from 'path';
 import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from './shared/config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { QueueModule } from './shared/queue/queue.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthModule } from './modules/auth/auth.module';
       }),
       inject: [ ConfigService ],
     }),
+    QueueModule,
     UserModule,
     AuthModule
   ],
