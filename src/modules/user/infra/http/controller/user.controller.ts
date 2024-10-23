@@ -80,6 +80,7 @@ export class UserController {
     });
   }
 
+  @Public()
   @Get("verify-email")
   public async verifyEmail(@Query("token") token?: string) {
     if(!token){
