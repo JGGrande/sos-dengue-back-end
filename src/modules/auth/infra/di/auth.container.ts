@@ -11,6 +11,8 @@ import { UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-
 import { PrismaUserRefreshTokenRepository } from "../database/prisma-user-refresh-token.repository";
 import { DateProviderToken } from "src/shared/providers/interface/date.provider";
 import { DateFnsProvider } from "src/shared/providers/implementation/date-fns.provider";
+import { QueueModule } from "src/shared/queue/queue.module";
+import { QueueService } from "src/shared/queue/queue.service";
 
 const UserDatabaseProvider: Provider = {
   provide: UserRepositoryToken,
@@ -52,8 +54,21 @@ const AuthTokenOptions: JwtModuleOptions = {
     PrismaModule,
     MailerModule,
     JwtModule.register(AuthTokenOptions),
+    QueueModule,
   ],
-  providers: [ UserDatabaseProvider, HashProvider, DateProvider, UserRefreshTokenProvider ],
-  exports: [ UserDatabaseProvider, HashProvider, DateProvider, UserRefreshTokenProvider ],
+  providers: [
+    UserDatabaseProvider,
+    HashProvider,
+    DateProvider,
+    UserRefreshTokenProvider,
+    QueueService
+  ],
+  exports: [
+    UserDatabaseProvider,
+    HashProvider,
+    DateProvider,
+    UserRefreshTokenProvider,
+    QueueService
+  ],
 })
 export class DIContainer { }

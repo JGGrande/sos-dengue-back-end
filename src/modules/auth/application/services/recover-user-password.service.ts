@@ -1,8 +1,8 @@
-import { MailerService } from "@nestjs-modules/mailer";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { UserRepository, UserRepositoryToken } from "src/modules/user/domain/repositories/user.repository";
+import { QueueService } from "src/shared/queue/queue.service";
 
 type Request = {
   email: string;
@@ -15,7 +15,7 @@ export class RecoverUserPasswordService {
   constructor(
     @Inject(UserRepositoryToken)
     private readonly userRepository: UserRepository,
-    private readonly emailProvider: MailerService,
+    private readonly queueService: QueueService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ){ }
@@ -43,7 +43,7 @@ export class RecoverUserPasswordService {
 
     const urlToRecoverPassword = `${protocol}://${host}/api/auth/user/change-password?token=${encodedToken}`;
 
-    await this.emailProvider.sendMail({
+    await this.queueService.addEmailJob({
       to: user.email,
       subject: "Recuperar senha",
       context: {
