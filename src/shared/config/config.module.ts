@@ -29,6 +29,9 @@ const envSchema = z.object({
   AUTH_TOKEN_EXPIRES_IN: z.string(),
   REFRESH_TOKEN_SECRET: z.string(),
   REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number(),
+  REDIS_PASSWORD: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

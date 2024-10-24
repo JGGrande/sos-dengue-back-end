@@ -6,6 +6,7 @@ import { HashProvider, HashProviderToken } from "src/shared/providers/interface/
 import { IUserRefreshTokenRepository, UserRefreshTokenRepositoryToken } from "../../domain/repositories/user-refresh-token.repository";
 import { DateProviderToken, IDateProvider } from "src/shared/providers/interface/date.provider";
 import { ConfigService } from "@nestjs/config";
+import { QueueService } from "src/shared/queue/queue.service";
 
 type Request = {
   cpf: string;
@@ -25,7 +26,7 @@ export class AuthUserService {
     private readonly userRepository: UserRepository,
     @Inject(UserRefreshTokenRepositoryToken)
     private readonly userRefreshTokenRepository: IUserRefreshTokenRepository,
-    private readonly emailProvider: MailerService,
+    private readonly queueService: QueueService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     @Inject(HashProviderToken)
@@ -79,7 +80,7 @@ export class AuthUserService {
       timeZone: 'America/Sao_Paulo',
     }).format(new Date());
 
-    await this.emailProvider.sendMail({
+    await this.queueService.addEmailJob({
       to: user.email,
       subject: "Login",
       context: {

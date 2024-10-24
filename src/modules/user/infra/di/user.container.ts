@@ -7,6 +7,8 @@ import { UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { Env } from "src/shared/config/config.module";
+import { QueueModule } from "src/shared/queue/queue.module";
+import { QueueService } from "src/shared/queue/queue.service";
 
 const DatabaseProvider: Provider = {
   provide: UserRepositoryToken,
@@ -19,7 +21,10 @@ const HashProvider: Provider = {
   useClass: BcryptProvider,
 }
 
-const { VERIFY_EMAIL_TOKEN_SECRET, VERIFY_EMAIL_TOKEN_EXPIRES_IN } = process.env as Env;
+const {
+  VERIFY_EMAIL_TOKEN_SECRET,
+  VERIFY_EMAIL_TOKEN_EXPIRES_IN
+} = process.env as Env;
 
 const VerifyEmailTokenOptions: JwtModuleOptions = {
   global: true,
@@ -35,8 +40,17 @@ const VerifyEmailTokenOptions: JwtModuleOptions = {
     PrismaModule,
     MailerModule,
     JwtModule.register(VerifyEmailTokenOptions),
+    QueueModule
   ],
-  providers: [DatabaseProvider, HashProvider],
-  exports: [DatabaseProvider, HashProvider],
+  providers: [
+    DatabaseProvider,
+    HashProvider,
+    QueueService
+  ],
+  exports: [
+    DatabaseProvider,
+    HashProvider,
+    QueueService
+  ],
 })
-export class DIContainer {}
+export class DIContainer { }
