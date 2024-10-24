@@ -1,6 +1,6 @@
-import { MailerService } from "@nestjs-modules/mailer";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { QueueService } from "src/shared/queue/queue.service";
 import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 
 interface IRequest {
@@ -15,7 +15,7 @@ export class UpdateUserEmailService {
   constructor(
     @Inject(UserRepositoryToken)
     private readonly userRepository: UserRepository,
-    private readonly emailProvider: MailerService,
+    private readonly queueService: QueueService,
     private readonly jwtProvider: JwtService
   ){ }
 
@@ -37,7 +37,7 @@ export class UpdateUserEmailService {
 
     const urlToVerify = `${protocol}://${host}/api/users/verify-email?token=${encodedToken}`;
 
-    await this.emailProvider.sendMail({
+    await this.queueService.addEmailJob({
       to: newEmail,
       subject: "verify email",
       context: {

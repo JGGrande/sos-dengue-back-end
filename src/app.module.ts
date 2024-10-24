@@ -15,15 +15,15 @@ import { QueueModule } from './shared/queue/queue.module';
       imports: [ ConfigModule ],
       useFactory: async (configService: ConfigService) => ({
         transport: {
-          port: configService.get<number>('EMAIL_PROVIDER_PORT'),
-          host: configService.get<string>('EMAIL_PROVIDER_HOST'),
+          port: configService.getOrThrow<number>('EMAIL_PROVIDER_PORT'),
+          host: configService.getOrThrow<string>('EMAIL_PROVIDER_HOST'),
           auth: {
-            user: configService.get<string>('EMAIL_PROVIDER_USER'),
-            pass: configService.get<string>('EMAIL_PROVIDER_PASSWORD'),
+            user: configService.getOrThrow<string>('EMAIL_PROVIDER_USER'),
+            pass: configService.getOrThrow<string>('EMAIL_PROVIDER_PASSWORD'),
           },
         },
         defaults: {
-          from: '"Mensagem automática" <bot@sosdengue.app>',
+          from: `"Mensagem automática" <${configService.getOrThrow<string>("EMAIL_PROVIDER_USER")}>`,
         },
         template: {
           dir: join(__dirname, 'shared', 'templates'),
