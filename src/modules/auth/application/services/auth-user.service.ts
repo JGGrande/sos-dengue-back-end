@@ -50,7 +50,10 @@ export class AuthUserService {
 
     const tokenPayload = { id: user.id };
 
-    const token = this.jwtService.sign(tokenPayload);
+    const token = this.jwtService.sign(tokenPayload, {
+      secret: this.configService.get<string>("AUTH_TOKEN_SECRET"),
+      expiresIn: this.configService.get<string>("AUTH_TOKEN_EXPIRES_IN")
+    });
 
     const REFRESH_TOKEN_SECRET = this.configService.get<string>("REFRESH_TOKEN_SECRET");
     const REFRESH_TOKEN_EXPIRES_IN = this.configService.get<string>("REFRESH_TOKEN_EXPIRES_IN");

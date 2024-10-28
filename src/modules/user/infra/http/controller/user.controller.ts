@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Patch, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
 import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
 import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
@@ -16,6 +16,8 @@ import { FindUserByIdPresent } from '../presenter/find-user-by-id.presenter';
 import { UpdateUserPresent } from '../presenter/update-user.presenter';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { Public } from 'src/shared/decorators/public.decorator';
+import { FileInterceptor } from '@nest-lab/fastify-multer';
+import { UpdateUserPhotoService } from 'src/modules/user/application/services/update-user-photo.service';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -27,6 +29,7 @@ export class UserController {
     private readonly updateUserService: UpdateUserService,
     private readonly updateUserEmailService: UpdateUserEmailService,
     private readonly verifyUserEmailService: VerifyUserEmailService,
+    private readonly updateUserPhotoService: UpdateUserPhotoService,
     private readonly deleteUserService: DeleteUserService
   ) {}
 
@@ -88,6 +91,15 @@ export class UserController {
     }
 
     await this.verifyUserEmailService.execute(token);
+  }
+
+  @Patch(":id/photo")
+  @UseInterceptors(FileInterceptor("photo"))
+  public async updatePhoto(
+    @UploadedFile() file,
+    @ParamId() userId: number,
+  ){
+    await this.updateUserPhotoService.execute(file, userId);
   }
 
   @Delete(":id")
