@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { File } from "src/@types/utils";
 import { directory } from "../../../../shared/config/user-file-path.config";
@@ -22,10 +22,25 @@ export class UpdateUserPhotoService {
 
     const newPhotoName = await this.fileProvider.upload(directory, photo);
 
-    user.photo = newPhotoName;
+    const defaultUserPhotoFileName = "default-user-photo.png";
 
-    console.debug(newPhotoName);
+    if(user.photo !== defaultUserPhotoFileName){
+      await this.fileProvider.delete(directory, user.photo);
+    }
 
-    // await this.userRepository.update(user);
+    try {
+      user.photo = newPhotoName;
+
+      const updatedUser = await this.userRepository.update(user);
+
+      return updatedUser;
+    } catch (error) {
+      console.error(error);
+
+      console.info(`Deleting photo ${newPhotoName} from directory ${directory}`);
+      await this.fileProvider.delete(directory, newPhotoName);
+
+      throw new InternalServerErrorException("Erro ao atualizar a foto do usuário.");
+    }
   }
 }

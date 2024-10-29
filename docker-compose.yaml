@@ -4,6 +4,7 @@ services:
     restart: on-failure
     depends_on:
       - postgres
+      - redis
     volumes:
       - .:/home/root/app
     ports:
@@ -23,6 +24,13 @@ services:
       - 5432:5432
     volumes:
       - ./docker/postgres:/var/lib/postgresql/data
+    networks:
+      - backbone
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
     networks:
       - backbone
 

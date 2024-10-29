@@ -1,4 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, Patch, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nest-lab/fastify-multer';
+import { BadRequestException, Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Patch, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { File } from 'src/@types/utils';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
 import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
 import { UpdateUserDto } from 'src/modules/user/application/dto/update-user.dto';
@@ -7,17 +9,16 @@ import { DeleteUserService } from 'src/modules/user/application/services/delete-
 import { FindAllUserService } from 'src/modules/user/application/services/find-all-user.service';
 import { FindUserByIdService } from 'src/modules/user/application/services/find-user-by-id.service';
 import { UpdateUserEmailService } from 'src/modules/user/application/services/update-user-email.service';
+import { UpdateUserPhotoService } from 'src/modules/user/application/services/update-user-photo.service';
 import { UpdateUserService } from 'src/modules/user/application/services/update-user.service';
 import { VerifyUserEmailService } from 'src/modules/user/application/services/verify-user-email.service';
 import { ParamId } from 'src/shared/decorators/param-id.decorator';
+import { Public } from 'src/shared/decorators/public.decorator';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
 import { CreateUserPresent } from '../presenter/create-user.presenter';
 import { FindAllUserPresent } from '../presenter/find-all-user.presenter';
 import { FindUserByIdPresent } from '../presenter/find-user-by-id.presenter';
 import { UpdateUserPresent } from '../presenter/update-user.presenter';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
-import { Public } from 'src/shared/decorators/public.decorator';
-import { FileInterceptor } from '@nest-lab/fastify-multer';
-import { UpdateUserPhotoService } from 'src/modules/user/application/services/update-user-photo.service';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -96,10 +97,20 @@ export class UserController {
   @Patch(":id/photo")
   @UseInterceptors(FileInterceptor("photo"))
   public async updatePhoto(
-    @UploadedFile() file,
+    @UploadedFile(
+      new ParseFilePipe({
+        errorHttpStatusCode: 400,
+        validators: [
+          new FileTypeValidator({ fileType: "image/*",}),
+          new MaxFileSizeValidator({ maxSize: 5000000 }) // 5 mb
+        ]
+      })
+    ) file: File,
     @ParamId() userId: number,
   ){
-    await this.updateUserPhotoService.execute(file, userId);
+    const updatedUser = await this.updateUserPhotoService.execute(file, userId);
+
+    return UpdateUserPresent.toHttpResponse(updatedUser);
   }
 
   @Delete(":id")
