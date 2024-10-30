@@ -11,4 +11,4 @@ const fileFolder = ambientPath
 
 const directory = fileFolder;
 
-export { directory}
+export { directory };

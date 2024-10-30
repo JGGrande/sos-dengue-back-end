@@ -1,5 +1,7 @@
 import { FileInterceptor } from '@nest-lab/fastify-multer';
-import { BadRequestException, Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Patch, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Patch, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FastifyReply } from "fastify";
+import { join } from 'path';
 import { File } from 'src/@types/utils';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
 import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
@@ -12,6 +14,7 @@ import { UpdateUserEmailService } from 'src/modules/user/application/services/up
 import { UpdateUserPhotoService } from 'src/modules/user/application/services/update-user-photo.service';
 import { UpdateUserService } from 'src/modules/user/application/services/update-user.service';
 import { VerifyUserEmailService } from 'src/modules/user/application/services/verify-user-email.service';
+import { directory } from 'src/shared/config/user-photo.config';
 import { ParamId } from 'src/shared/decorators/param-id.decorator';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { AuthGuard } from 'src/shared/guards/auth.guard';
@@ -19,6 +22,7 @@ import { CreateUserPresent } from '../presenter/create-user.presenter';
 import { FindAllUserPresent } from '../presenter/find-all-user.presenter';
 import { FindUserByIdPresent } from '../presenter/find-user-by-id.presenter';
 import { UpdateUserPresent } from '../presenter/update-user.presenter';
+import { createReadStream } from 'fs';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -111,6 +115,26 @@ export class UserController {
     const updatedUser = await this.updateUserPhotoService.execute(file, userId);
 
     return UpdateUserPresent.toHttpResponse(updatedUser);
+  }
+
+  @Get(":id/photo")
+  public async getPhoto(
+    @ParamId() userId: number,
+    @Res() res: FastifyReply
+  ){
+    const user = await this.findUserByIdService.execute(userId);
+
+    if(!user.photo){
+      return res.status(204).send();
+    }
+
+    const photoPath = join(directory, user.photo);
+
+    const photoStream = createReadStream(photoPath);
+
+    const photoExtension = user.photo.split(".").pop();
+
+    return res.type(`image/${photoExtension}`).send(photoStream);
   }
 
   @Delete(":id")

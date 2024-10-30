@@ -1,7 +1,7 @@
 import { Inject, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { File } from "src/@types/utils";
-import { directory } from "../../../../shared/config/user-file-path.config";
+import { directory } from "../../../../shared/config/user-photo.config";
 import { FileProviderToken, IFIleProvider } from "src/shared/providers/interface/file.provider";
 
 @Injectable()
