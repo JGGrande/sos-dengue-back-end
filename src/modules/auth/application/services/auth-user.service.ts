@@ -1,4 +1,3 @@
-import { MailerService } from "@nestjs-modules/mailer";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserRepository, UserRepositoryToken } from "src/modules/user/domain/repositories/user.repository";
@@ -48,7 +47,10 @@ export class AuthUserService {
       throw new NotFoundException("CPF ou senha inválidos.");
     }
 
-    const tokenPayload = { id: user.id };
+    const tokenPayload = {
+      id: user.id,
+      role: user.role
+    };
 
     const token = this.jwtService.sign(tokenPayload, {
       secret: this.configService.get<string>("AUTH_TOKEN_SECRET"),

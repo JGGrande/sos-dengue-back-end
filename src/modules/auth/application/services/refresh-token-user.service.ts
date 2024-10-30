@@ -35,7 +35,7 @@ export class RefreshTokenUserService {
       throw new UnauthorizedException("Token inválido!");
     }
 
-    const { id: userId } = decoded as { id: number };
+    const { id: userId, role: userRole } = decoded as { id: number, role: string };
 
     const userRefreshToken = await this.userRefreshTokenRepository.findByUserIdAndToken(userId, refreshToken);
 
@@ -43,7 +43,10 @@ export class RefreshTokenUserService {
       throw new UnauthorizedException("Token inválido");
     }
 
-    const tokenPayload = { id: userId };
+    const tokenPayload = {
+      id: userId,
+      role: userRole
+    };
 
     const token = this.jwtService.sign(tokenPayload);
 

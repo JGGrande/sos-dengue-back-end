@@ -5,6 +5,7 @@ import { JwtService } from "@nestjs/jwt";
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "../decorators/public.decorator";
+import { Role } from "src/modules/user/domain/entities/user-roles.enum";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -37,12 +38,16 @@ export class AuthGuard implements CanActivate {
       const data = this.jwtService.verify(token);
 
       const tokenSchema = z.object({
-        id: z.coerce.number().int().positive()
+        id: z.coerce.number().int().positive(),
+        role: z.nativeEnum(Role)
       });
 
-      const { id } = tokenSchema.parse(data);
+      const { id, role } = tokenSchema.parse(data);
 
-      request.user = { id: id };
+      request.user = {
+        id: id,
+        role: role
+      };
 
       return true
     }catch(e){
