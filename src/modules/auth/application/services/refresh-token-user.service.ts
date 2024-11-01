@@ -3,6 +3,7 @@ import { IUserRefreshTokenRepository, UserRefreshTokenRepositoryToken } from "..
 import { JwtService } from "@nestjs/jwt";
 import { Env } from "src/shared/config/config.module";
 import { DateProviderToken, IDateProvider } from "src/shared/providers/interface/date.provider";
+import { ConfigService } from "@nestjs/config";
 
 type Request = {
   refreshToken: string;
@@ -12,6 +13,7 @@ export class RefreshTokenUserService {
   constructor(
     @Inject(UserRefreshTokenRepositoryToken)
     private readonly userRefreshTokenRepository: IUserRefreshTokenRepository,
+    private readonly configService: ConfigService,
     @Inject(DateProviderToken)
     private readonly dateProvider: IDateProvider,
     private readonly jwtService: JwtService
@@ -48,7 +50,11 @@ export class RefreshTokenUserService {
       role: userRole
     };
 
-    const token = this.jwtService.sign(tokenPayload);
+    const token = this.jwtService.sign(tokenPayload, {
+      secret: this.configService.getOrThrow<string>("AUTH_TOKEN_SECRET"),
+      expiresIn: this.configService.getOrThrow<string>("AUTH_TOKEN_EXPIRES_IN")
+    });
+
 
     const refreshTokenHasExpired = hasExpired(userRefreshToken.expiresIn);
 
