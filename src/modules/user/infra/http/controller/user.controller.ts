@@ -41,7 +41,6 @@ export class UserController {
     private readonly deleteUserService: DeleteUserService
   ) { }
 
-  @Roles(Role.ADMIN)
   @Public()
   @Post()
   public async create(@Body() createUserDto: CreateUserByRequestDto) {
