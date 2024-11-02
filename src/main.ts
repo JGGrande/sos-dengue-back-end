@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { Env } from './shared/config/config.module';
 import { ZodExceptionFilter } from './shared/exceptions-filters/zod-exception.filter';
 import { join } from 'path';
+import fastifyMultipart from '@fastify/multipart';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -31,6 +32,8 @@ async function bootstrap() {
     },
     templates: join(__dirname, "shared", "templates"),
   });
+
+  await app.register(fastifyMultipart);
 
   await app.listen(
     PORT,

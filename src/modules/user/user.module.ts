@@ -8,6 +8,7 @@ import { UpdateUserService } from './application/services/update-user.service';
 import { UpdateUserEmailService } from './application/services/update-user-email.service';
 import { VerifyUserEmailService } from './application/services/verify-user-email.service';
 import { DeleteUserService } from './application/services/delete-user.service';
+import { UpdateUserPhotoService } from './application/services/update-user-photo.service';
 
 @Module({
   imports: [ DIContainer ],
@@ -19,6 +20,7 @@ import { DeleteUserService } from './application/services/delete-user.service';
     UpdateUserService,
     UpdateUserEmailService,
     VerifyUserEmailService,
+    UpdateUserPhotoService,
     DeleteUserService
   ]
 })

@@ -13,6 +13,8 @@ model User {
   name             String            @db.VarChar(255)
   cpf              String            @db.VarChar(11)
   email            String            @db.VarChar(255)
+  photo            String            @db.VarChar(255)
+  role             String            @db.VarChar(255)
   password         String            @db.VarChar(255)
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()

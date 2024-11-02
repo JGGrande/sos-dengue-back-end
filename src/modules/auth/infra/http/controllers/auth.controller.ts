@@ -81,7 +81,7 @@ export class AuthController {
     return this.changeUserPasswordService.execute(password, token);
   }
 
-  @Post('user/refresh_token')
+  @Post('user/refresh-token')
   public async refreshTokenUser(@Body() { refreshToken }: RefreshTokenUserDto){
     return this.refreshTokenUserService.execute({ refreshToken });
   }

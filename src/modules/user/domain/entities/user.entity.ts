@@ -3,6 +3,8 @@ type UserProps = {
   name: string;
   cpf: string;
   email: string;
+  photo: string;
+  role: string;
   password: string;
   createdAt: Date;
   updatedAt: Date;
@@ -14,6 +16,8 @@ export class User {
   name: string;
   cpf: string;
   email: string;
+  photo: string;
+  role: string;
   password: string;
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +28,8 @@ export class User {
     this.name = props.name;
     this.cpf = props.cpf;
     this.email = props.email;
+    this.photo = props.photo;
+    this.role = props.role;
     this.password = props.password;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;

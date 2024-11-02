@@ -9,6 +9,8 @@ import { JwtModule, JwtModuleOptions } from "@nestjs/jwt";
 import { Env } from "src/shared/config/config.module";
 import { QueueModule } from "src/shared/queue/queue.module";
 import { QueueService } from "src/shared/queue/queue.service";
+import { FileProviderToken } from "src/shared/providers/interface/file.provider";
+import { FileInDiskProvider } from "src/shared/providers/implementation/file-in-disk.provider";
 
 const DatabaseProvider: Provider = {
   provide: UserRepositoryToken,
@@ -35,6 +37,11 @@ const VerifyEmailTokenOptions: JwtModuleOptions = {
   }
 }
 
+const FileProvider: Provider = {
+  provide: FileProviderToken,
+  useClass: FileInDiskProvider,
+}
+
 @Module({
   imports: [
     PrismaModule,
@@ -45,12 +52,14 @@ const VerifyEmailTokenOptions: JwtModuleOptions = {
   providers: [
     DatabaseProvider,
     HashProvider,
-    QueueService
+    QueueService,
+    FileProvider
   ],
   exports: [
     DatabaseProvider,
     HashProvider,
-    QueueService
+    QueueService,
+    FileProvider
   ],
 })
 export class DIContainer { }
