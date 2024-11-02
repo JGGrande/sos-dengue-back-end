@@ -3,6 +3,7 @@ import { IUserRefreshTokenRepository, UserRefreshTokenRepositoryToken } from "..
 import { JwtService } from "@nestjs/jwt";
 import { Env } from "src/shared/config/config.module";
 import { DateProviderToken, IDateProvider } from "src/shared/providers/interface/date.provider";
+import { ConfigService } from "@nestjs/config";
 
 type Request = {
   refreshToken: string;
@@ -12,6 +13,7 @@ export class RefreshTokenUserService {
   constructor(
     @Inject(UserRefreshTokenRepositoryToken)
     private readonly userRefreshTokenRepository: IUserRefreshTokenRepository,
+    private readonly configService: ConfigService,
     @Inject(DateProviderToken)
     private readonly dateProvider: IDateProvider,
     private readonly jwtService: JwtService
@@ -35,7 +37,7 @@ export class RefreshTokenUserService {
       throw new UnauthorizedException("Token inválido!");
     }
 
-    const { id: userId } = decoded as { id: number };
+    const { id: userId, role: userRole } = decoded as { id: number, role: string };
 
     const userRefreshToken = await this.userRefreshTokenRepository.findByUserIdAndToken(userId, refreshToken);
 
@@ -43,9 +45,16 @@ export class RefreshTokenUserService {
       throw new UnauthorizedException("Token inválido");
     }
 
-    const tokenPayload = { id: userId };
+    const tokenPayload = {
+      id: userId,
+      role: userRole
+    };
 
-    const token = this.jwtService.sign(tokenPayload);
+    const token = this.jwtService.sign(tokenPayload, {
+      secret: this.configService.getOrThrow<string>("AUTH_TOKEN_SECRET"),
+      expiresIn: this.configService.getOrThrow<string>("AUTH_TOKEN_EXPIRES_IN")
+    });
+
 
     const refreshTokenHasExpired = hasExpired(userRefreshToken.expiresIn);
 
