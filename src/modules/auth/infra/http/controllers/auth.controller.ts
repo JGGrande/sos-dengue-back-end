@@ -10,6 +10,7 @@ import { ChangeUserPasswordDto } from "src/modules/auth/application/dtos/change-
 import { ChangeUserPasswordService } from '../../../application/services/change-user-password.service';
 import { JwtService } from "@nestjs/jwt";
 import { Env } from "src/shared/config/config.module";
+import { Public } from "src/shared/decorators/public.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -81,6 +82,7 @@ export class AuthController {
     return this.changeUserPasswordService.execute(password, token);
   }
 
+  @Public()
   @Post('user/refresh-token')
   public async refreshTokenUser(@Body() { refreshToken }: RefreshTokenUserDto){
     return this.refreshTokenUserService.execute({ refreshToken });

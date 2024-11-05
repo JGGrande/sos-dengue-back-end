@@ -2,7 +2,7 @@ import { join } from 'path';
 import { createReadStream } from 'fs';
 import { FastifyReply } from "fastify";
 import { FileInterceptor } from '@nest-lab/fastify-multer';
-import { BadRequestException, Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Patch, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, Patch, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { File } from 'src/@types/utils';
 import { CreateUserByRequestDto } from 'src/modules/user/application/dto/create-user.dto';
 import { UpdateUserEmailDto } from 'src/modules/user/application/dto/update-user-email.dto';
@@ -142,6 +142,25 @@ export class UserController {
     const photoStream = createReadStream(photoPath);
 
     const photoExtension = user.photo.split(".").pop();
+
+    return res.type(`image/${photoExtension}`).send(photoStream);
+  }
+
+  @Roles(Role.ADMIN, Role.AGENTE)
+  @Get("/photo/:photo")
+  public async findPhotoByFilename(
+    @Param("photo") photo: string,
+    @Res() res: FastifyReply
+  ) {
+    if(!photo) {
+      return res.status(204).send();
+    }
+
+    const photoPath = join(directory, photo);
+
+    const photoStream = createReadStream(photoPath);
+
+    const photoExtension = photo.split(".").pop();
 
     return res.type(`image/${photoExtension}`).send(photoStream);
   }
