@@ -7,7 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from './shared/config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { QueueModule } from './shared/queue/queue.module';
-import { FastifyMulterModule } from '@nest-lab/fastify-multer';
+import { ResidenceModule } from './modules/residence/residence.module';
 
 @Module({
   imports: [
@@ -38,7 +38,8 @@ import { FastifyMulterModule } from '@nest-lab/fastify-multer';
     }),
     QueueModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    ResidenceModule
   ],
   controllers: [],
   providers: [],
