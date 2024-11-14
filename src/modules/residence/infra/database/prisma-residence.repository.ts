@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
+import { Decimal } from "@prisma/client/runtime/library";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateResidenceDto } from "../../application/dtos/create-residence.dto";
+import { FindAllResidenceByCoordinatesDto, FindResidenceDto, FindResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
 import { Residence } from "../../domain/entites/residence.entity";
 import { IResidenceRepository } from "../../domain/repositories/residence.repository";
-import { FindAllResidenceByCoordinatesDto } from "../../application/dtos/find-all-residence-by-coordinates.dto";
-import { Decimal } from "@prisma/client/runtime/library";
 
 @Injectable()
 export class PrismaResidenceRepository implements IResidenceRepository {
@@ -48,4 +48,50 @@ export class PrismaResidenceRepository implements IResidenceRepository {
 
     return residencesInstances;
   }
+
+  public async findByCepAndStreetAndNumber({ cep, street, number }: FindResidenceDto): Promise<Residence | null> {
+    const residence = await this.prisma.residence.findFirst({
+      where: {
+        cep,
+        street,
+        number,
+      }
+    });
+
+    if (!residence) {
+      return null;
+    }
+
+    const residenceInstance = new Residence({
+      ...residence,
+      lat: residence.lat.toNumber(),
+      lng: residence.lng.toNumber(),
+    });
+
+    return residenceInstance;
+  }
+
+  public async findByCepAndStreetAndNumberAndBlock({ cep, street, number, block }: FindResidenceWithBlockDto): Promise<Residence | null> {
+    const residence = await this.prisma.residence.findFirst({
+      where: {
+        cep,
+        street,
+        number,
+        block,
+      }
+    });
+
+    if (!residence) {
+      return null;
+    }
+
+    const residenceInstance = new Residence({
+      ...residence,
+      lat: residence.lat.toNumber(),
+      lng: residence.lng.toNumber(),
+    });
+
+    return residenceInstance;
+  }
+
 }
