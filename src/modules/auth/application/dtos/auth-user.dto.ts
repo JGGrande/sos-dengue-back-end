@@ -27,13 +27,13 @@ export class AuthUserDto {
     minLength: 6,
     minLowercase: 1,
     minSymbols: 1,
-  }, { message: "Senha deve ter no mínimo 6 caracteres, incluindo pelo menos 1 letra minúscula e 1 carácter especial" })
-  @MaxLength(255, { message: "Senha digitada maior que o tamanho suportado" })
+  }, { message: "CPF ou senha incorretos." })
+  @MaxLength(255, { message: "Senha digitada maior que o tamanho suportado." })
   password: string;
 
-  @IsObject({ message: "Informações do dispositivo devem ser um objeto" })
-  @IsNotEmptyObject({}, { message: "Informações do dispositivo não podem estar vazias" })
-  @ValidateNested({ message: "Informações do dispositivo são inválidas" })
+  @IsObject({ message: "Informações do dispositivo invalidas." })
+  @IsNotEmptyObject({}, { message: "Informações do dispositivo não podem estar vazias." })
+  @ValidateNested({ message: "Informações do dispositivo são inválidas." })
   @Type(() => DeviceInfoDto)
   deviceInfo: DeviceInfoDto;
 }

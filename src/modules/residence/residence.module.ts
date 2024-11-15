@@ -1,15 +1,17 @@
 import { Module } from "@nestjs/common";
 import { ResidenceController } from "./infra/http/controllers/residence.controller";
-import { CreateResidenceService } from "./application/services/create-residence.service";
+import { CreateHouseResidenceService } from "./application/services/create-house-residence.service";
 import { DIContainer } from "./infra/di/residence.container";
 import { FindAllResidenceByCoordinatesService } from "./application/services/find-all-residence-by-coordinates.service";
+import { FindHouseResidenceService } from "./application/services/find-house-residence.service";
 
 @Module({
   imports: [ DIContainer ],
   controllers: [ ResidenceController ],
   providers: [
-    CreateResidenceService,
-    FindAllResidenceByCoordinatesService
+    CreateHouseResidenceService,
+    FindAllResidenceByCoordinatesService,
+    FindHouseResidenceService
   ],
 })
 export class ResidenceModule { }
