@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { Decimal } from "@prisma/client/runtime/library";
+import { Residence as ResidencePrisma } from "@prisma/client";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateResidenceDto } from "../../application/dtos/create-residence.dto";
-import { FindAllResidenceByCoordinatesDto, FindResidenceDto, FindResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
+import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto, FindHouseResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
 import { Residence } from "../../domain/entites/residence.entity";
 import { IResidenceRepository } from "../../domain/repositories/residence.repository";
 
@@ -49,46 +50,76 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     return residencesInstances;
   }
 
-  public async findByCepAndStreetAndNumber({ cep, street, number }: FindResidenceDto): Promise<Residence | null> {
-    const residence = await this.prisma.residence.findFirst({
-      where: {
+  public async findByCepAndStreetAndNumber({ cep, street, number }: FindHouseResidenceDto): Promise<Residence | null> {
+    const residence = await this.prisma.$queryRaw<ResidencePrisma[]>`
+      SELECT
+        id,
+        type,
         cep,
+        lat,
+        lng,
         street,
         number,
-      }
-    });
+        neighborhood,
+        street_court as "streetCourt",
+        block,
+        complement,
+        apartment_number as "apartmentNumber",
+        created_at as "createdAt",
+        updated_at as "updatedAt"
+      FROM "residence"
+      WHERE "cep" = ${cep}
+        AND unaccent("street") ILIKE unaccent(${street})
+        AND "number" = ${number}
+      LIMIT 1;
+    `;
 
-    if (!residence) {
+    if (!residence.length) {
       return null;
     }
 
     const residenceInstance = new Residence({
-      ...residence,
-      lat: residence.lat.toNumber(),
-      lng: residence.lng.toNumber(),
+      ...residence[0],
+      lat: residence[0].lat.toNumber(),
+      lng: residence[0].lng.toNumber(),
     });
 
     return residenceInstance;
   }
 
-  public async findByCepAndStreetAndNumberAndBlock({ cep, street, number, block }: FindResidenceWithBlockDto): Promise<Residence | null> {
-    const residence = await this.prisma.residence.findFirst({
-      where: {
+  public async findByCepAndStreetAndNumberAndBlock({ cep, street, number, block }: FindHouseResidenceWithBlockDto): Promise<Residence | null> {
+    const residence = await this.prisma.$queryRaw<ResidencePrisma[]>`
+      SELECT
+        id,
+        type,
         cep,
+        lat,
+        lng,
         street,
         number,
+        neighborhood,
+        street_court as "streetCourt",
         block,
-      }
-    });
+        complement,
+        apartment_number as "apartmentNumber",
+        created_at as "createdAt",
+        updated_at as "updatedAt"
+      FROM "residence"
+      WHERE "cep" = ${cep}
+        AND unaccent("street") ILIKE unaccent(${street})
+        AND "number" = ${number}
+        AND "block" = ${block}
+      LIMIT 1;
+    `;
 
-    if (!residence) {
+    if (!residence.length) {
       return null;
     }
 
     const residenceInstance = new Residence({
-      ...residence,
-      lat: residence.lat.toNumber(),
-      lng: residence.lng.toNumber(),
+      ...residence[0],
+      lat: residence[0].lat.toNumber(),
+      lng: residence[0].lng.toNumber(),
     });
 
     return residenceInstance;

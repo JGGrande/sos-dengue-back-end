@@ -1,10 +1,10 @@
-export class FindResidenceDto {
+export class FindHouseResidenceDto {
   cep: string;
   number: string;
   street: string;
 }
 
-export class FindResidenceWithBlockDto {
+export class FindHouseResidenceWithBlockDto {
   cep: string;
   number: string;
   street: string;

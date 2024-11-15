@@ -1,45 +1,59 @@
-import { IsEnum, IsLatitude, IsLongitude, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ResidenceTypeEnum } from '../../domain/enums/residence.enum';
+import { IsLatitude, IsLongitude, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateResidenceDto {
-  @IsString()
-  @IsEnum(ResidenceTypeEnum)
   type: string;
 
-  @IsString()
   cep: string;
 
-  @IsNumber()
-  @IsLatitude()
   lat: number;
 
-  @IsNumber()
-  @IsLongitude()
   lng: number;
 
-  @IsString()
   street: string;
 
-  @IsOptional()
-  @IsString()
   number: string | null;
 
-  @IsString()
   neighborhood: string;
 
-  @IsOptional()
-  @IsString()
   streetCourt: string | null;
 
+  block: string | null;
+
+  complement: string | null;
+
+  apartmentNumber: string | null;
+}
+
+export class CreateHouseResidenceRequestDto {
+  @IsString({ message: 'CEP informado inválido.' })
+  @Length(8, 8, { message: 'CEP deve ter 8 caracteres.' })
+  cep: string;
+
+  @IsNumber({}, { message: 'Latitude deve ser um número' })
+  @IsLatitude({ message: 'Latitude inválida' })
+  lat: number;
+
+  @IsNumber({}, { message: 'Longitude deve ser um número' })
+  @IsLongitude({ message: 'Longitude inválida' })
+  lng: number;
+
+  @IsString({ message: 'Rua informada inválida.' })
+  street: string;
+
+  @IsString({ message: 'Número da casa informado inválido.' })
+  number: string;
+
+  @IsString({ message: 'Bairro informado inválido.' })
+  neighborhood: string;
+
+  @IsString({ message: 'Quadra informada inválida.' })
+  streetCourt: string;
+
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Bloco informado inválido.' })
   block: string | null;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Complemento informado inválido.' })
   complement: string | null;
-
-  @IsOptional()
-  @IsString()
-  apartmentNumber: string | null;
 }

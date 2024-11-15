@@ -38,7 +38,11 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   public async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany({
+      where: {
+        deletedAt: {}
+      }
+    });
 
     return users.map(user => new User(user));
   }

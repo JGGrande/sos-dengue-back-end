@@ -1,29 +1,28 @@
 import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import { IResidenceRepository, ResidenceRepositoryToken } from "../../domain/repositories/residence.repository";
 import { Residence } from "../../domain/entites/residence.entity";
+import { ResidenceTypeEnum } from "../../domain/enums/residence.enum";
 
-type CreateResidenceServiceProps = {
-  type: string;
+type CreateHouseResidenceServiceProps = {
   cep: string;
   lat: number;
   lng: number;
   street: string;
-  number: string | null;
+  number: string;
   neighborhood: string;
-  streetCourt: string | null;
+  streetCourt: string;
   block: string | null;
   complement: string | null;
-  apartmentNumber: string | null;
 }
 
 @Injectable()
-export class CreateResidenceService {
+export class CreateHouseResidenceService {
   constructor(
     @Inject(ResidenceRepositoryToken)
     private readonly residenceRepository: IResidenceRepository
   ) { }
 
-  async execute(data: CreateResidenceServiceProps): Promise<Residence> {
+  async execute(data: CreateHouseResidenceServiceProps): Promise<Residence> {
     if(data.block){
       const residence = await this.residenceRepository.findByCepAndStreetAndNumberAndBlock({
         cep: data.cep,
@@ -47,7 +46,11 @@ export class CreateResidenceService {
       throw new ConflictException('Residência já cadastrada.');
     }
 
-    const newResidence = await this.residenceRepository.create(data);
+    const newResidence = await this.residenceRepository.create({
+      ...data,
+      type: ResidenceTypeEnum.HOUSE,
+      apartmentNumber: null,
+    });
 
     return newResidence;
   }
