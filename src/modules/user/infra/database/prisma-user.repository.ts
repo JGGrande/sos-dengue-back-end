@@ -55,6 +55,17 @@ export class PrismaUserRepository implements UserRepository {
     return user ? new User(user) : null;
   }
 
+  public async findByIdWithDeleted(id: number): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+        deletedAt: {}
+      }
+    });
+
+    return user ? new User(user) : null;
+  }
+
   public async findByCpf(cpf: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: { cpf }
@@ -89,7 +100,7 @@ export class PrismaUserRepository implements UserRepository {
     return user;
   }
 
-  public async update({ id, cpf, name, password, photo, role }: User): Promise<User> {
+  public async update({ id, cpf, name, password, photo, role, email, deletedAt }: User): Promise<User> {
     const userData = await this.prisma.user.update({
       where: { id },
       data: {
@@ -97,7 +108,9 @@ export class PrismaUserRepository implements UserRepository {
         cpf,
         password,
         photo,
-        role
+        role,
+        email,
+        deletedAt
       }
     });
 

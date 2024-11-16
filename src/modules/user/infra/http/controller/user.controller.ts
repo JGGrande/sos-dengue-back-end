@@ -26,6 +26,7 @@ import { UpdateUserPresent } from '../presenter/update-user.presenter';
 import { RoleGuard } from 'src/shared/guards/role.guard';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { Role } from 'src/modules/user/domain/entities/user-roles.enum';
+import { RestoreUserService } from 'src/modules/user/application/services/restore-user.service';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
@@ -38,7 +39,8 @@ export class UserController {
     private readonly updateUserEmailService: UpdateUserEmailService,
     private readonly verifyUserEmailService: VerifyUserEmailService,
     private readonly updateUserPhotoService: UpdateUserPhotoService,
-    private readonly deleteUserService: DeleteUserService
+    private readonly deleteUserService: DeleteUserService,
+    private readonly restoreUserService: RestoreUserService
   ) { }
 
   @Public()
@@ -170,4 +172,11 @@ export class UserController {
   public async delete(@ParamId() id: number) {
     await this.deleteUserService.execute(id);
   }
+
+  @Roles(Role.ADMIN)
+  @Patch("/:id/restore")
+  public async restore(@ParamId() id: number){
+    await this.restoreUserService.execute(id);
+  }
+
 }
