@@ -89,7 +89,7 @@ export class PrismaUserRepository implements UserRepository {
     return user;
   }
 
-  public async update({ id, cpf, name, password, photo, role }: User): Promise<User> {
+  public async update({ id, cpf, name, password, photo, role, email, deletedAt }: User): Promise<User> {
     const userData = await this.prisma.user.update({
       where: { id },
       data: {
@@ -97,7 +97,9 @@ export class PrismaUserRepository implements UserRepository {
         cpf,
         password,
         photo,
-        role
+        role,
+        email,
+        deletedAt
       }
     });
 

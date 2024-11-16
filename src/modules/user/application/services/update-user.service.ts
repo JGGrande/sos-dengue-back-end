@@ -3,11 +3,13 @@ import { HashProvider, HashProviderToken } from "src/shared/providers/interface/
 import { UserRepository, UserRepositoryToken } from "../../domain/repositories/user.repository";
 import { ConfigService } from "@nestjs/config";
 
-interface IRequest {
+type Request = {
   id: number;
   name?: string;
   cpf?: string;
   password?: string;
+  email?: string;
+  role?: string;
 }
 
 @Injectable()
@@ -20,7 +22,7 @@ export class UpdateUserService {
     private readonly configService: ConfigService
   ){}
 
-  async execute({ id, name, cpf, password }: IRequest){
+  async execute({ id, name, cpf, password, role, email }: Request){
     const user = await this.userRepository.findById(id);
 
     if(!user){
@@ -28,6 +30,10 @@ export class UpdateUserService {
     }
 
     if(name) user.name = name;
+
+    if(email) user.email = email;
+
+    if(role) user.role = role;
 
     if(cpf){
       const userWithCpf = await this.userRepository.findIdByCpf(cpf);
