@@ -1,8 +1,9 @@
-import { IsBoolean, IsEnum, IsISO8601, IsNumber, IsObject, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsEnum, IsISO8601, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Deposit } from "../../domain/types/deposit.type";
 import { Sample } from "../../domain/types/sample.type";
 import { Treatment } from "../../domain/types/treatment.type";
 import { VisitActivity, VisitPending, VisitType } from "../../domain/enums/visit.enum";
+import { Type } from "class-transformer";
 
 export class CreateVisitDto {
   activity: string;
@@ -76,24 +77,31 @@ class SampleDto {
   tubeCount: number | null;
 }
 
+class LarvicideDto {
+  @IsString({ message: 'Tipo de larvicida inválido.' })
+  type: string;
+
+  @IsNumber({}, { message: 'Quantidade de larvicida inválida.' })
+  quantity: number;
+
+  @IsNumber({}, { message: 'Quantidade depositada de larvicida inválida.' })
+  depositedQuantity: number;
+}
 class TreatmentDto {
+  @IsObject({ message: 'Tratamento focal inválido.' })
+  @IsNotEmptyObject({}, { message: "Tratamento focal inválido." })
+  @ValidateNested({ message: "Tratamento focal inválido." })
+  @Type(() => LarvicideDto)
   focal: {
-    larvicide1: {
-      type: string;
-      quantity: number;
-      depositedQuantity: number;
-    };
-    larvicide2: {
-      type: string;
-      quantity: number;
-      depositedQuantity: number;
-    };
-  };
-  perifocal: {
-    type: string;
-    quantity: number;
-    depositedQuantity: number;
-  }
+    larvicide1: LarvicideDto | null;
+    larvicide2: LarvicideDto | null;
+  } | null;
+
+  @IsObject({ message: 'Tratamento perifocal inválido.' })
+  @IsNotEmptyObject({}, { message: "Tratamento perifocal inválido." })
+  @ValidateNested({ message: "Tratamento perifocal inválido." })
+  @Type(() => LarvicideDto)
+  perifocal: LarvicideDto | null;
 }
 
 export class CreateVisitaByRequestDto {
@@ -119,13 +127,22 @@ export class CreateVisitaByRequestDto {
   inspected: boolean;
 
   @IsObject({ message: 'Depósito inválido.' })
+  @IsNotEmptyObject({}, { message: "Depósito inválido." })
+  @ValidateNested({ message: "Depósito inválido." })
+  @Type(() => DepositDto)
   deposit: DepositDto;
 
   @IsObject({ message: 'Amostra inválida.' })
+  @IsNotEmptyObject({}, { message: "Amostra inválida." })
+  @ValidateNested({ message: "Amostra inválida." })
+  @Type(() => SampleDto ?? null)
   @IsOptional()
   sample: SampleDto | null;
 
   @IsObject({ message: 'Tratamento inválido.' })
+  @IsNotEmptyObject({}, { message: "Tratamento inválido." })
+  @ValidateNested({ message: "Tratamento inválido." })
+  @Type(() => TreatmentDto ?? null)
   @IsOptional()
   treatment: TreatmentDto | null;
 
