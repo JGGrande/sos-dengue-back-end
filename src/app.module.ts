@@ -8,6 +8,7 @@ import { ConfigModule } from './shared/config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { QueueModule } from './shared/queue/queue.module';
 import { ResidenceModule } from './modules/residence/residence.module';
+import { VisitModule } from './modules/visit/visit.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { ResidenceModule } from './modules/residence/residence.module';
     QueueModule,
     UserModule,
     AuthModule,
-    ResidenceModule
+    ResidenceModule,
+    VisitModule
   ],
   controllers: [],
   providers: [],

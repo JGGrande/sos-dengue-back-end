@@ -21,6 +21,7 @@ model User {
   updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
   deletedAt        DateTime?         @map("deleted_at") @db.Timestamptz()
   UserRefreshToken UserRefreshToken?
+  Visit            Visit[]
 
   @@map("user")
 }
@@ -52,6 +53,28 @@ model Residence {
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  Visit     Visit[]
 
   @@map("residence")
+}
+
+model Visit {
+  id        Int      @id @default(autoincrement())
+  activity  String   @db.VarChar(255)
+  type      String   @db.VarChar(255)
+  pending   String?  @db.VarChar(255)
+  startedAt DateTime @map("started_at") @db.Timestamptz()
+  endedAt   DateTime @map("ended_at") @db.Timestamptz()
+  inspected Boolean  @default(false)
+  deposit   Json
+  sample    Json?
+  treatment Json?
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
+
+  residenceId Int       @map("residence_id")
+  residence   Residence @relation(fields: [residenceId], references: [id])
+
+  @@map("visit")
 }
