@@ -17,4 +17,33 @@ export class PrismaVisitRepository implements IVisitRepository {
       }
     });
   }
+
+  public async countByUserIdAndStartedAtBetweenDate(userId: number, startDate: Date, endDate: Date): Promise<number> {
+    const count = await this.prisma.visit.count({
+      where: {
+        userId,
+        startedAt: {
+          gte: startDate,
+          lte: endDate,
+        }
+      }
+    });
+
+    return count;
+  }
+
+  public async countFociFoundByUserIdAndStartedAtBetweenDate(userId: number, startDate: Date, endDate: Date): Promise<number> {
+    const count = await this.prisma.visit.count({
+      where: {
+        userId,
+        startedAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+        sample: { not: null}
+      }
+    });
+
+    return count;
+  }
 }
