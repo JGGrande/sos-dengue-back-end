@@ -18,8 +18,8 @@ export class VisitController {
     await this.createVisitService.execute(createVisitDto);
   }
 
-  @Get('agent/:id/monthly-summary')
-  public async findAgentMonthlySummary(@ParamId() userId: number) {
+  @Get('agent/:userId/monthly-summary')
+  public async findAgentMonthlySummary(@ParamId("userId") userId: number) {
     return this.findAgentMonthlySummaryService.execute(userId);
   }
 }

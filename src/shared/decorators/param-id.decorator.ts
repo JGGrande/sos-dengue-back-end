@@ -2,13 +2,15 @@ import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 import { z } from "zod";
 
 export const ParamId = createParamDecorator(( _data: unknown, context: ExecutionContext ) => {
+  const paramIdName = typeof _data == "string" ? _data : 'id';
+
   const { params } = context.switchToHttp().getRequest();
 
   const ParmIdSchema = z.object({
-    id: z.coerce.number().int().positive().min(1)
+    [paramIdName]: z.coerce.number({ message: `${paramIdName} não econtrado.` }).int().positive()
   });
 
-  const { id } = ParmIdSchema.parse(params);
+  const { paramId } = ParmIdSchema.parse(params);
 
-  return id;
+  return paramId;
 });
