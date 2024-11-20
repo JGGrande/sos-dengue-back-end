@@ -31,50 +31,61 @@ export class CreateVisitDto {
 
 class DepositDto {
   @IsNumber({}, { message: 'A1 inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  a1: number | null;
+  a1: number | null = null;
 
   @IsNumber({}, { message: 'A2 inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  a2: number | null;
+  a2: number | null = null;
 
   @IsNumber({}, { message: 'B inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  b: number | null;
+  b: number | null = null;
 
   @IsNumber({}, { message: 'C inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  c: number | null;
+  c: number | null = null;
 
   @IsNumber({}, { message: 'D1 inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  d1: number | null;
+  d1: number | null = null;
 
   @IsNumber({}, { message: 'D2 inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  d2: number | null;
+  d2: number | null = null;
 
   @IsNumber({}, { message: 'E inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  e: number | null;
+  e: number | null = null;
 
   @IsNumber({}, { message: 'Eliminado inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  eliminated: number | null;
+  eliminated: number | null = null;
 }
 
 class SampleDto {
   @IsNumber({}, { message: 'Inicial inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  initial: number | null;
+  initial: number | null = null;
 
   @IsNumber({}, { message: 'Final inválido.' })
+  @Type(() => Number)
   @IsOptional()
-  final: number | null;
+  final: number | null = null;
 
   @IsNumber({}, { message: 'Contagem de tubos inválida.' })
+  @Type(() => Number)
   @IsOptional()
-  tubeCount: number | null;
+  tubeCount: number | null = null;
 }
 
 class LarvicideDto {
@@ -87,21 +98,36 @@ class LarvicideDto {
   @IsNumber({}, { message: 'Quantidade depositada de larvicida inválida.' })
   depositedQuantity: number;
 }
-class TreatmentDto {
+class FocalDto {
   @IsObject({ message: 'Tratamento focal inválido.' })
   @IsNotEmptyObject({}, { message: "Tratamento focal inválido." })
   @ValidateNested({ message: "Tratamento focal inválido." })
   @Type(() => LarvicideDto)
-  focal: {
-    larvicide1: LarvicideDto | null;
-    larvicide2: LarvicideDto | null;
-  } | null;
+  @IsOptional()
+  larvicide1: LarvicideDto | null = null;
+
+  @IsObject({ message: 'Tratamento focal inválido.' })
+  @IsNotEmptyObject({}, { message: "Tratamento focal inválido." })
+  @ValidateNested({ message: "Tratamento focal inválido." })
+  @Type(() => LarvicideDto)
+  @IsOptional()
+  larvicide2: LarvicideDto | null = null;
+}
+
+class TreatmentDto {
+  @IsObject({ message: 'Tratamento focal inválido.' })
+  @IsNotEmptyObject({}, { message: "Tratamento focal inválido." })
+  @ValidateNested({ message: "Tratamento focal inválido." })
+  @Type(() => FocalDto)
+  @IsOptional()
+  focal: FocalDto| null = null;
 
   @IsObject({ message: 'Tratamento perifocal inválido.' })
   @IsNotEmptyObject({}, { message: "Tratamento perifocal inválido." })
   @ValidateNested({ message: "Tratamento perifocal inválido." })
   @Type(() => LarvicideDto)
-  perifocal: LarvicideDto | null;
+  @IsOptional()
+  perifocal: LarvicideDto | null = null;
 }
 
 export class CreateVisitaByRequestDto {
@@ -113,7 +139,8 @@ export class CreateVisitaByRequestDto {
 
   @IsOptional()
   @IsEnum(VisitPending, { message: 'Status inválido.' })
-  pending: string | null;
+  @Type(() => String)
+  pending: string | null = null;
 
   @IsString({  message: 'Data de início inválida.' })
   @IsISO8601({ strict: true }, { message: 'Data de início inválida.' })
@@ -135,16 +162,16 @@ export class CreateVisitaByRequestDto {
   @IsObject({ message: 'Amostra inválida.' })
   @IsNotEmptyObject({}, { message: "Amostra inválida." })
   @ValidateNested({ message: "Amostra inválida." })
-  @Type(() => SampleDto ?? null)
+  @Type(() => SampleDto)
   @IsOptional()
-  sample: SampleDto | null;
+  sample: SampleDto | null = null;
 
   @IsObject({ message: 'Tratamento inválido.' })
   @IsNotEmptyObject({}, { message: "Tratamento inválido." })
   @ValidateNested({ message: "Tratamento inválido." })
-  @Type(() => TreatmentDto ?? null)
+  @Type(() => TreatmentDto)
   @IsOptional()
-  treatment: TreatmentDto | null;
+  treatment: TreatmentDto | null = null;
 
   @IsNumber({}, { message: 'Usuário inválido.' })
   userId: number;
