@@ -6,7 +6,6 @@ export class Visit {
   readonly id: number;
   activity: string;
   type: string;
-  status: string;
   pending: string | null;
   startedAt: Date;
   endedAt: Date;

@@ -1,6 +1,13 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { Env } from "../config/config.module";
 
-export const extendedPrismaClient = new PrismaClient()
+const { NODE_ENV } = process.env as Env;
+
+const logLevels: Prisma.LogLevel[] = NODE_ENV === 'production' || NODE_ENV === 'homologacao'
+  ? ['error']
+  : ['query', 'info', 'warn', 'error'];
+
+export const extendedPrismaClient = new PrismaClient({ log: logLevels })
 .$extends({
   query: {
     user: {

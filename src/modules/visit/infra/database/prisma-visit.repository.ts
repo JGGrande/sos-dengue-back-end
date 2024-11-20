@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/shared/prisma/prisma.service";
-import { IVisitRepository } from "../../domain/repositories/visit.repository";
 import { CreateVisitDto } from "../../application/dtos/create-visit.dto";
+import { VisitWithUserAndResidenceDto } from "../../application/dtos/visit-with-user-and-residence.dto";
+import { IVisitRepository } from "../../domain/repositories/visit.repository";
+import { PrismaVisitMapper } from "./prisma-visit.mapper";
 
 @Injectable()
 export class PrismaVisitRepository implements IVisitRepository {
@@ -45,5 +47,22 @@ export class PrismaVisitRepository implements IVisitRepository {
     });
 
     return count;
+  }
+
+  public async findAllByResidenceId(residenceId: number): Promise<VisitWithUserAndResidenceDto[]> {
+    const visits = await this.prisma.visit.findMany({
+      where: {
+        residenceId
+      },
+      include: {
+        user: true,
+        residence: true,
+      },
+      orderBy: {
+        startedAt: 'desc'
+      }
+    });
+
+    return PrismaVisitMapper.toDomainWithUserAndResidence(visits);
   }
 }
