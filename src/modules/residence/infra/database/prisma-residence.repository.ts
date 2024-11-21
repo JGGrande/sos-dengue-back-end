@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Decimal } from "@prisma/client/runtime/library";
 import { Residence as ResidencePrisma } from "@prisma/client";
 import { PrismaService } from "src/shared/prisma/prisma.service";
-import { CreateResidenceDto } from "../../application/dtos/create-residence.dto";
+import { CreateResidenceDto } from "../../application/dtos/create-house-residence.dto";
 import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto, FindHouseResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
 import { Residence } from "../../domain/entites/residence.entity";
 import { IResidenceRepository } from "../../domain/repositories/residence.repository";
@@ -136,6 +136,39 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     });
 
     return !!residence;
+  }
+
+  public async update(residence: Residence): Promise<Residence> {
+    const { id, ...residenceWithoutId } = residence;
+
+    const residenceUpdated = await this.prisma.residence.update({
+      where: { id },
+      data: residenceWithoutId
+    });
+
+    return new Residence({
+      ...residenceUpdated,
+      lat: residenceUpdated.lat.toNumber(),
+      lng: residenceUpdated.lng.toNumber(),
+    });
+  }
+
+  public async findById(id: number): Promise<Residence | null> {
+    const residence = await this.prisma.residence.findUnique({
+      where: { id }
+    });
+
+    if (!residence) {
+      return null;
+    }
+
+    const residenceInstance = new Residence({
+      ...residence,
+      lat: residence.lat.toNumber(),
+      lng: residence.lng.toNumber(),
+    });
+
+    return residenceInstance;
   }
 
 }

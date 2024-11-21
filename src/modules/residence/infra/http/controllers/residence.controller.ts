@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { FastifyRequest } from "fastify";
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 
-import { CreateHouseResidenceRequestDto } from "src/modules/residence/application/dtos/create-residence.dto";
+import { CreateHouseResidenceRequestDto } from "src/modules/residence/application/dtos/create-house-residence.dto";
 import { CreateHouseResidenceService } from "src/modules/residence/application/services/create-house-residence.service";
 import { FindAllResidenceByCoordinatesService } from "src/modules/residence/application/services/find-all-residence-by-coordinates.service";
 import { AuthGuard } from "src/shared/guards/auth.guard";
 import { FindHouseResidenceService } from "src/modules/residence/application/services/find-house-residence.service";
+import { ParamId } from "src/shared/decorators/param-id.decorator";
+import { UpdateHouseResidenceService } from "src/modules/residence/application/services/update-house-residence.service";
+import { UpdateHouseResidenceRequestDto } from "src/modules/residence/application/dtos/update-house-residence.dto";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -14,7 +17,8 @@ export class ResidenceController {
   constructor(
     private readonly createHouseResidenceService: CreateHouseResidenceService,
     private readonly findAllResidenceByCoordinatesService: FindAllResidenceByCoordinatesService,
-    private readonly findHouseResidenceService: FindHouseResidenceService
+    private readonly findHouseResidenceService: FindHouseResidenceService,
+    private readonly updateHouseResidenceService: UpdateHouseResidenceService
   ){ }
 
   @Post("/house")
@@ -22,6 +26,14 @@ export class ResidenceController {
     const residence = await this.createHouseResidenceService.execute(body);
 
     return residence;
+  }
+
+  @Put("/house/:id")
+  public async update(
+    @Body() body: UpdateHouseResidenceRequestDto,
+    @ParamId() id: number
+  ) {
+    return this.updateHouseResidenceService.execute({ id, ...body });
   }
 
   @Get("/lat/:lat/lng/:lng")
