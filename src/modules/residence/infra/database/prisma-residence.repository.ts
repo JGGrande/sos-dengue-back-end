@@ -125,4 +125,17 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     return residenceInstance;
   }
 
+  public async exitsById(id: number): Promise<boolean> {
+    const residence = await this.prisma.residence.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+      }
+    });
+
+    return !!residence;
+  }
+
 }

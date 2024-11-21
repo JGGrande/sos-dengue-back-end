@@ -7,6 +7,7 @@ export interface IResidenceRepository {
   findAllByCoordinates({}: FindAllResidenceByCoordinatesDto): Promise<Residence[]>;
   findByCepAndStreetAndNumber({}: FindHouseResidenceDto): Promise<Residence | null>;
   findByCepAndStreetAndNumberAndBlock({}: FindHouseResidenceWithBlockDto): Promise<Residence | null>;
+  exitsById(id: number): Promise<boolean>;
 }
 
 export const ResidenceRepositoryToken = Symbol('ResidenceRepository');
