@@ -10,6 +10,7 @@ import { FindHouseResidenceService } from "src/modules/residence/application/ser
 import { ParamId } from "src/shared/decorators/param-id.decorator";
 import { UpdateHouseResidenceService } from "src/modules/residence/application/services/update-house-residence.service";
 import { UpdateHouseResidenceRequestDto } from "src/modules/residence/application/dtos/update-house-residence.dto";
+import { FindResidenceByIdService } from "src/modules/residence/application/services/find-residence-by-id.service";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -18,7 +19,8 @@ export class ResidenceController {
     private readonly createHouseResidenceService: CreateHouseResidenceService,
     private readonly findAllResidenceByCoordinatesService: FindAllResidenceByCoordinatesService,
     private readonly findHouseResidenceService: FindHouseResidenceService,
-    private readonly updateHouseResidenceService: UpdateHouseResidenceService
+    private readonly updateHouseResidenceService: UpdateHouseResidenceService,
+    private readonly findResidenceByIdService: FindResidenceByIdService,
   ){ }
 
   @Post("/house")
@@ -73,6 +75,13 @@ export class ResidenceController {
     });
 
     return residences;
+  }
+
+  @Get(":id")
+  public async findById(
+    @ParamId() id: number
+  ) {
+    return this.findResidenceByIdService.execute(id);
   }
 
 }

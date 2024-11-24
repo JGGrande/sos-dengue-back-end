@@ -5,6 +5,7 @@ import { DIContainer } from "./infra/di/residence.container";
 import { FindAllResidenceByCoordinatesService } from "./application/services/find-all-residence-by-coordinates.service";
 import { FindHouseResidenceService } from "./application/services/find-house-residence.service";
 import { UpdateHouseResidenceService } from "./application/services/update-house-residence.service";
+import { FindResidenceByIdService } from "./application/services/find-residence-by-id.service";
 
 @Module({
   imports: [ DIContainer ],
@@ -13,6 +14,7 @@ import { UpdateHouseResidenceService } from "./application/services/update-house
     CreateHouseResidenceService,
     FindAllResidenceByCoordinatesService,
     FindHouseResidenceService,
+    FindResidenceByIdService,
     UpdateHouseResidenceService
   ],
 })
