@@ -191,7 +191,7 @@ export class PrismaResidenceRepository implements IResidenceRepository {
       });
 
       // @ts-ignore
-      residenceInstance.visit = new Visit(residence.Visit[0]);
+      residenceInstance.visit = residence.Visit.length ? new Visit(residence.Visit[0]) : null;
 
       return residenceInstance;
     });

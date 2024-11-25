@@ -17,7 +17,7 @@ export class FindAllResidenceIntensityService {
 
   private residencesIntensityMapper(residences: ResidenceWithVisitDto[]): ResidenceIntensity[] {
     return residences.map(residence => {
-      const intensity = residence.visit.sample?.tubeCount ?? 0;
+      const intensity = residence.visit?.sample?.tubeCount ?? 0;
 
       return {
         lat: residence.lat,
