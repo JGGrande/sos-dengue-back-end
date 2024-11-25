@@ -6,6 +6,8 @@ import { CreateResidenceDto } from "../../application/dtos/create-house-residenc
 import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto, FindHouseResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
 import { Residence } from "../../domain/entites/residence.entity";
 import { IResidenceRepository } from "../../domain/repositories/residence.repository";
+import { ResidenceWithVisitDto } from "../../application/dtos/residence-with-visit.dto";
+import { Visit } from "src/modules/visit/domain/entities/visit.entity";
 
 @Injectable()
 export class PrismaResidenceRepository implements IResidenceRepository {
@@ -169,6 +171,32 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     });
 
     return residenceInstance;
+  }
+
+  public async findAllWithLatestVisit(): Promise<ResidenceWithVisitDto[]> {
+    const residences = await this.prisma.residence.findMany({
+      include: {
+        Visit: {
+          orderBy: { endedAt: "desc" },
+          take: 1,
+        }
+      }
+    });
+
+    const residencesInstances = residences.map(residence => {
+      const residenceInstance =  new ResidenceWithVisitDto({
+        ...residence,
+        lat: residence.lat.toNumber(),
+        lng: residence.lng.toNumber(),
+      });
+
+      // @ts-ignore
+      residenceInstance.visit = new Visit(residence.Visit[0]);
+
+      return residenceInstance;
+    });
+
+    return residencesInstances;
   }
 
 }

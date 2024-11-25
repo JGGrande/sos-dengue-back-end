@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { QueueModule } from './shared/queue/queue.module';
 import { ResidenceModule } from './modules/residence/residence.module';
 import { VisitModule } from './modules/visit/visit.module';
+import { IntegrationModule } from './modules/integration/integration.module';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { VisitModule } from './modules/visit/visit.module';
     UserModule,
     AuthModule,
     ResidenceModule,
-    VisitModule
+    VisitModule,
+    IntegrationModule
   ],
   controllers: [],
   providers: [],
