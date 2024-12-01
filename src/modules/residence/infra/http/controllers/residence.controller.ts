@@ -16,6 +16,7 @@ import { CreateApartmentResidenceRequestDto } from "src/modules/residence/applic
 import { FindApartmentResidenceService } from "src/modules/residence/application/services/find-apartment-residence.service";
 import { CreateWastelandResidenceService } from "src/modules/residence/application/services/create-wasteland-residence.service";
 import { CreateWastelandResidenceRequestDto } from '../../../application/dtos/create-wasteland-residence.dto';
+import { FindWasteLandResidenceService } from "src/modules/residence/application/services/find-wasteland-residence.service";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -27,6 +28,7 @@ export class ResidenceController {
     private readonly findAllResidenceByCoordinatesService: FindAllResidenceByCoordinatesService,
     private readonly findHouseResidenceService: FindHouseResidenceService,
     private readonly findApartmentResidenceService: FindApartmentResidenceService,
+    private readonly findWasteLandResidenceService: FindWasteLandResidenceService,
     private readonly updateHouseResidenceService: UpdateHouseResidenceService,
     private readonly findResidenceByIdService: FindResidenceByIdService,
   ){ }
@@ -103,7 +105,7 @@ export class ResidenceController {
   public async findApartment(
     @Req() req: FastifyRequest
   ) {
-    const findHouseQuerySchema = z.object({
+    const findApartmentQuerySchema = z.object({
       cep: z.string(),
       number: z.string(),
       street: z.string(),
@@ -111,7 +113,7 @@ export class ResidenceController {
       apartmentNumber: z.string()
     });
 
-    const { cep, number, street, block, apartmentNumber } = findHouseQuerySchema.parse(req.query);
+    const { cep, number, street, block, apartmentNumber } = findApartmentQuerySchema.parse(req.query);
 
     const residences = await this.findApartmentResidenceService.execute({
       cep,
@@ -124,6 +126,28 @@ export class ResidenceController {
     return residences;
   }
 
+  @Get("/wasteland")
+  public async findWasteland(
+    @Req() req: FastifyRequest
+  ) {
+    const findWastelandQuerySchema = z.object({
+      cep: z.string(),
+      referencePoint: z.string(),
+      street: z.string(),
+      block: z.string().optional(),
+    });
+
+    const { cep, street, block, referencePoint } = findWastelandQuerySchema.parse(req.query);
+
+    const residences = await this.findWasteLandResidenceService.execute({
+      cep,
+      street,
+      block,
+      referencePoint
+    });
+
+    return residences;
+  }
 
   @Get(":id")
   public async findById(
