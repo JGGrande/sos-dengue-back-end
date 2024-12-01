@@ -1,7 +1,7 @@
-import { Residence } from "../entites/residence.entity";
 import { CreateResidenceDto } from "../../application/dtos/create-house-residence.dto";
-import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto, FindHouseResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
+import { FindAllResidenceByCoordinatesDto } from "../../application/dtos/find-residence.dto";
 import { ResidenceWithVisitDto } from "../../application/dtos/residence-with-visit.dto";
+import { Residence } from "../entites/residence.entity";
 
 export interface IResidenceRepository {
   create({}: CreateResidenceDto): Promise<Residence>;

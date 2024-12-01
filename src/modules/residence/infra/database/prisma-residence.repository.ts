@@ -3,7 +3,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 import { Prisma, Residence as ResidencePrisma } from "@prisma/client";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateResidenceDto } from "../../application/dtos/create-house-residence.dto";
-import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto } from "../../application/dtos/find-residence.dto";
+import { FindAllResidenceByCoordinatesDto } from "../../application/dtos/find-residence.dto";
 import { Residence } from "../../domain/entites/residence.entity";
 import { IResidenceRepository } from "../../domain/repositories/residence.repository";
 import { ResidenceWithVisitDto } from "../../application/dtos/residence-with-visit.dto";

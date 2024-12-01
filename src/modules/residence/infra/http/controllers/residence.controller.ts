@@ -19,6 +19,7 @@ import { CreateWastelandResidenceRequestDto } from '../../../application/dtos/cr
 import { FindWasteLandResidenceService } from "src/modules/residence/application/services/find-wasteland-residence.service";
 import { CreateCommercialResidenceService } from "src/modules/residence/application/services/create-commercial-residence.service";
 import { CreateCommercialResidenceRequestDto } from "src/modules/residence/application/dtos/create-commercial-residence.dto";
+import { FindCommercialResidenceService } from "src/modules/residence/application/services/find-commercial-residence.service";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -32,6 +33,7 @@ export class ResidenceController {
     private readonly findHouseResidenceService: FindHouseResidenceService,
     private readonly findApartmentResidenceService: FindApartmentResidenceService,
     private readonly findWasteLandResidenceService: FindWasteLandResidenceService,
+    private readonly findCommercialResidenceService: FindCommercialResidenceService,
     private readonly updateHouseResidenceService: UpdateHouseResidenceService,
     private readonly findResidenceByIdService: FindResidenceByIdService,
   ){ }
@@ -156,6 +158,29 @@ export class ResidenceController {
       street,
       block,
       referencePoint
+    });
+
+    return residences;
+  }
+
+  @Get("/commercial")
+  public async findCommercial(
+    @Req() req: FastifyRequest
+  ) {
+    const findCommercialQuerySchema = z.object({
+      cep: z.string(),
+      number: z.string(),
+      street: z.string(),
+      block: z.string().optional(),
+    });
+
+    const { cep, number, street, block } = findCommercialQuerySchema.parse(req.query);
+
+    const residences = await this.findCommercialResidenceService.execute({
+      cep,
+      number,
+      street,
+      block
     });
 
     return residences;
