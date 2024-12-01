@@ -3,7 +3,7 @@ import { IResidenceRepository, ResidenceRepositoryToken } from "../../domain/rep
 import { Residence } from "../../domain/entites/residence.entity";
 import { ResidenceTypeEnum } from "../../domain/enums/residence.enum";
 
-type CreateHouseResidenceServiceProps = {
+type CreateApartmentResidenceServiceProps = {
   cep: string;
   lat: number;
   lng: number;
@@ -11,23 +11,25 @@ type CreateHouseResidenceServiceProps = {
   number: string;
   neighborhood: string;
   streetCourt: string;
+  apartmentNumber: string;
   block: string | null;
   complement: string | null;
 }
 
 @Injectable()
-export class CreateHouseResidenceService {
+export class CreateApartmentResidenceService {
   constructor(
     @Inject(ResidenceRepositoryToken)
     private readonly residenceRepository: IResidenceRepository
   ) { }
 
-  async execute(data: CreateHouseResidenceServiceProps): Promise<Residence> {
+  async execute(data: CreateApartmentResidenceServiceProps): Promise<Residence> {
     const residenceAlreadyExists = await this.residenceRepository.findOne({
       cep: data.cep,
       street: data.street,
       number: data.number,
-      block: data.block
+      block: data.block,
+      apartmentNumber: data.apartmentNumber
     });
 
     if(residenceAlreadyExists){
@@ -36,8 +38,7 @@ export class CreateHouseResidenceService {
 
     const newResidence = await this.residenceRepository.create({
       ...data,
-      type: ResidenceTypeEnum.HOUSE,
-      apartmentNumber: null,
+      type: ResidenceTypeEnum.APARTMENT,
     });
 
     return newResidence;

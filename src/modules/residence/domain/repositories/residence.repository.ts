@@ -8,8 +8,7 @@ export interface IResidenceRepository {
   update({}: Residence): Promise<Residence>;
 
   findAllByCoordinates({}: FindAllResidenceByCoordinatesDto): Promise<Residence[]>;
-  findByCepAndStreetAndNumber({}: FindHouseResidenceDto): Promise<Residence | null>;
-  findByCepAndStreetAndNumberAndBlock({}: FindHouseResidenceWithBlockDto): Promise<Residence | null>;
+  findOne({}: Partial<Residence>): Promise<Residence | null>;
   exitsById(id: number): Promise<boolean>;
   findById(id: number): Promise<Residence | null>;
   findAllWithLatestVisit(): Promise<ResidenceWithVisitDto[]>;

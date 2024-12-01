@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Decimal } from "@prisma/client/runtime/library";
-import { Residence as ResidencePrisma } from "@prisma/client";
+import { Prisma, Residence as ResidencePrisma } from "@prisma/client";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateResidenceDto } from "../../application/dtos/create-house-residence.dto";
 import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto, FindHouseResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
@@ -89,8 +89,33 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     return residenceInstance;
   }
 
-  public async findByCepAndStreetAndNumberAndBlock({ cep, street, number, block }: FindHouseResidenceWithBlockDto): Promise<Residence | null> {
-    const residence = await this.prisma.$queryRaw<ResidencePrisma[]>`
+  public async findOne(residence: Partial<Residence>): Promise<Residence | null> {
+    const whereCondition = Object
+    .entries(residence)
+    .filter(([_, value]) => value !== undefined)
+    .map(([key, value]) => {
+      const columnsMapper: Record<keyof Residence, string> = {
+        id: `id = ${value}`,
+        street: `unaccent("street") ILIKE unaccent('${value}')`,
+        number: `number = '${value}'`,
+        apartmentNumber: `apartment_number = '${value}'`,
+        block: `block = ${value}`,
+        cep: `cep = '${value}'`,
+        complement: `complement = '${value}'`,
+        lat: `lat = ${value}`,
+        lng: `lng = ${value}`,
+        neighborhood: `neighborhood = '${value}'`,
+        streetCourt: `street_court = '${value}'`,
+        type: `type = '${value}'`,
+        createdAt: `created_at = '${value instanceof Date ? value.toISOString() : value}'`,
+        updatedAt: `updated_at = '${value instanceof Date ? value.toISOString() : value}'`
+      }
+
+      return columnsMapper[key];
+    })
+    .join(' AND ');
+
+    const residenceResult = await this.prisma.$queryRaw<ResidencePrisma[]>`
       SELECT
         id,
         type,
@@ -107,21 +132,18 @@ export class PrismaResidenceRepository implements IResidenceRepository {
         created_at as "createdAt",
         updated_at as "updatedAt"
       FROM "residence"
-      WHERE "cep" = ${cep}
-        AND unaccent("street") ILIKE unaccent(${street})
-        AND "number" = ${number}
-        AND "block" = ${block}
+      WHERE ${Prisma.raw(whereCondition)}
       LIMIT 1;
-    `;
+  `;
 
-    if (!residence.length) {
+    if (!residenceResult.length) {
       return null;
     }
 
     const residenceInstance = new Residence({
-      ...residence[0],
-      lat: residence[0].lat.toNumber(),
-      lng: residence[0].lng.toNumber(),
+      ...residenceResult[0],
+      lat: residenceResult[0].lat.toNumber(),
+      lng: residenceResult[0].lng.toNumber(),
     });
 
     return residenceInstance;
@@ -184,7 +206,7 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     });
 
     const residencesInstances = residences.map(residence => {
-      const residenceInstance =  new ResidenceWithVisitDto({
+      const residenceInstance = new ResidenceWithVisitDto({
         ...residence,
         lat: residence.lat.toNumber(),
         lng: residence.lng.toNumber(),

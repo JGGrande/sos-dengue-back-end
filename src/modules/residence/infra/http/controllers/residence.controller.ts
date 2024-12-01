@@ -11,12 +11,15 @@ import { ParamId } from "src/shared/decorators/param-id.decorator";
 import { UpdateHouseResidenceService } from "src/modules/residence/application/services/update-house-residence.service";
 import { UpdateHouseResidenceRequestDto } from "src/modules/residence/application/dtos/update-house-residence.dto";
 import { FindResidenceByIdService } from "src/modules/residence/application/services/find-residence-by-id.service";
+import { CreateApartmentResidenceService } from "src/modules/residence/application/services/create-apartment-residence.service";
+import { CreateApartmentResidenceRequestDto } from "src/modules/residence/application/dtos/create-apartment-residence.dto";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
 export class ResidenceController {
   constructor(
     private readonly createHouseResidenceService: CreateHouseResidenceService,
+    private readonly createApartmentResidenceService: CreateApartmentResidenceService,
     private readonly findAllResidenceByCoordinatesService: FindAllResidenceByCoordinatesService,
     private readonly findHouseResidenceService: FindHouseResidenceService,
     private readonly updateHouseResidenceService: UpdateHouseResidenceService,
@@ -24,8 +27,15 @@ export class ResidenceController {
   ){ }
 
   @Post("/house")
-  public async create(@Body() body: CreateHouseResidenceRequestDto) {
+  public async createHouse(@Body() body: CreateHouseResidenceRequestDto) {
     const residence = await this.createHouseResidenceService.execute(body);
+
+    return residence;
+  }
+
+  @Post("/apartment")
+  public async createApartment(@Body() body: CreateApartmentResidenceRequestDto) {
+    const residence = await this.createApartmentResidenceService.execute(body);
 
     return residence;
   }

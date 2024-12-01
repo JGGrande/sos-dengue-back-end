@@ -16,21 +16,11 @@ export class FindHouseResidenceService {
   ) { }
 
   async execute({ cep, number, street, block }: FindHouseResidenceServiceProps) {
-    if(block){
-      const residence = await this.residenceRepository.findByCepAndStreetAndNumberAndBlock({
-        cep: cep,
-        street: street,
-        number: number,
-        block: block
-      });
-
-      return residence;
-    }
-
-    const residence = await this.residenceRepository.findByCepAndStreetAndNumber({
+    const residence = await this.residenceRepository.findOne({
       cep: cep,
       street: street,
-      number: number
+      number: number,
+      block
     });
 
     return residence;

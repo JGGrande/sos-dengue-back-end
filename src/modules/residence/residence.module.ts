@@ -6,12 +6,14 @@ import { FindAllResidenceByCoordinatesService } from "./application/services/fin
 import { FindHouseResidenceService } from "./application/services/find-house-residence.service";
 import { UpdateHouseResidenceService } from "./application/services/update-house-residence.service";
 import { FindResidenceByIdService } from "./application/services/find-residence-by-id.service";
+import { CreateApartmentResidenceService } from "./application/services/create-apartment-residence.service";
 
 @Module({
   imports: [ DIContainer ],
   controllers: [ ResidenceController ],
   providers: [
     CreateHouseResidenceService,
+    CreateApartmentResidenceService,
     FindAllResidenceByCoordinatesService,
     FindHouseResidenceService,
     FindResidenceByIdService,
