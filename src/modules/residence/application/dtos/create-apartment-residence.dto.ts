@@ -16,7 +16,7 @@ export class CreateApartmentResidenceRequestDto {
   @IsString({ message: 'Rua informada inválida.' })
   street: string;
 
-  @IsString({ message: 'Número da casa informado inválido.' })
+  @IsString({ message: 'Número do prédio informado inválido.' })
   number: string;
 
   @IsString({ message: 'Bairro informado inválido.' })

@@ -13,6 +13,7 @@ import { UpdateHouseResidenceRequestDto } from "src/modules/residence/applicatio
 import { FindResidenceByIdService } from "src/modules/residence/application/services/find-residence-by-id.service";
 import { CreateApartmentResidenceService } from "src/modules/residence/application/services/create-apartment-residence.service";
 import { CreateApartmentResidenceRequestDto } from "src/modules/residence/application/dtos/create-apartment-residence.dto";
+import { FindApartmentResidenceService } from "src/modules/residence/application/services/find-apartment-residence.service";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -22,6 +23,7 @@ export class ResidenceController {
     private readonly createApartmentResidenceService: CreateApartmentResidenceService,
     private readonly findAllResidenceByCoordinatesService: FindAllResidenceByCoordinatesService,
     private readonly findHouseResidenceService: FindHouseResidenceService,
+    private readonly findApartmentResidenceService: FindApartmentResidenceService,
     private readonly updateHouseResidenceService: UpdateHouseResidenceService,
     private readonly findResidenceByIdService: FindResidenceByIdService,
   ){ }
@@ -86,6 +88,32 @@ export class ResidenceController {
 
     return residences;
   }
+
+  @Get("/apartment")
+  public async findApartment(
+    @Req() req: FastifyRequest
+  ) {
+    const findHouseQuerySchema = z.object({
+      cep: z.string(),
+      number: z.string(),
+      street: z.string(),
+      block: z.string().optional(),
+      apartmentNumber: z.string()
+    });
+
+    const { cep, number, street, block, apartmentNumber } = findHouseQuerySchema.parse(req.query);
+
+    const residences = await this.findApartmentResidenceService.execute({
+      cep,
+      number,
+      street,
+      block,
+      apartmentNumber
+    });
+
+    return residences;
+  }
+
 
   @Get(":id")
   public async findById(

@@ -7,6 +7,7 @@ import { FindHouseResidenceService } from "./application/services/find-house-res
 import { UpdateHouseResidenceService } from "./application/services/update-house-residence.service";
 import { FindResidenceByIdService } from "./application/services/find-residence-by-id.service";
 import { CreateApartmentResidenceService } from "./application/services/create-apartment-residence.service";
+import { FindApartmentResidenceService } from "./application/services/find-apartment-residence.service";
 
 @Module({
   imports: [ DIContainer ],
@@ -16,6 +17,7 @@ import { CreateApartmentResidenceService } from "./application/services/create-a
     CreateApartmentResidenceService,
     FindAllResidenceByCoordinatesService,
     FindHouseResidenceService,
+    FindApartmentResidenceService,
     FindResidenceByIdService,
     UpdateHouseResidenceService
   ],

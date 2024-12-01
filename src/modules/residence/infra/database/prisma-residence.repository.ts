@@ -3,7 +3,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 import { Prisma, Residence as ResidencePrisma } from "@prisma/client";
 import { PrismaService } from "src/shared/prisma/prisma.service";
 import { CreateResidenceDto } from "../../application/dtos/create-house-residence.dto";
-import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto, FindHouseResidenceWithBlockDto } from "../../application/dtos/find-residence.dto";
+import { FindAllResidenceByCoordinatesDto, FindHouseResidenceDto } from "../../application/dtos/find-residence.dto";
 import { Residence } from "../../domain/entites/residence.entity";
 import { IResidenceRepository } from "../../domain/repositories/residence.repository";
 import { ResidenceWithVisitDto } from "../../application/dtos/residence-with-visit.dto";
@@ -52,43 +52,6 @@ export class PrismaResidenceRepository implements IResidenceRepository {
     return residencesInstances;
   }
 
-  public async findByCepAndStreetAndNumber({ cep, street, number }: FindHouseResidenceDto): Promise<Residence | null> {
-    const residence = await this.prisma.$queryRaw<ResidencePrisma[]>`
-      SELECT
-        id,
-        type,
-        cep,
-        lat,
-        lng,
-        street,
-        number,
-        neighborhood,
-        street_court as "streetCourt",
-        block,
-        complement,
-        apartment_number as "apartmentNumber",
-        created_at as "createdAt",
-        updated_at as "updatedAt"
-      FROM "residence"
-      WHERE "cep" = ${cep}
-        AND unaccent("street") ILIKE unaccent(${street})
-        AND "number" = ${number}
-      LIMIT 1;
-    `;
-
-    if (!residence.length) {
-      return null;
-    }
-
-    const residenceInstance = new Residence({
-      ...residence[0],
-      lat: residence[0].lat.toNumber(),
-      lng: residence[0].lng.toNumber(),
-    });
-
-    return residenceInstance;
-  }
-
   public async findOne(residence: Partial<Residence>): Promise<Residence | null> {
     const whereCondition = Object
     .entries(residence)
@@ -99,7 +62,7 @@ export class PrismaResidenceRepository implements IResidenceRepository {
         street: `unaccent("street") ILIKE unaccent('${value}')`,
         number: `number = '${value}'`,
         apartmentNumber: `apartment_number = '${value}'`,
-        block: `block = ${value}`,
+        block: `block = '${value}'`,
         cep: `cep = '${value}'`,
         complement: `complement = '${value}'`,
         lat: `lat = ${value}`,
@@ -134,7 +97,7 @@ export class PrismaResidenceRepository implements IResidenceRepository {
       FROM "residence"
       WHERE ${Prisma.raw(whereCondition)}
       LIMIT 1;
-  `;
+    `;
 
     if (!residenceResult.length) {
       return null;
@@ -145,6 +108,7 @@ export class PrismaResidenceRepository implements IResidenceRepository {
       lat: residenceResult[0].lat.toNumber(),
       lng: residenceResult[0].lng.toNumber(),
     });
+
 
     return residenceInstance;
   }
