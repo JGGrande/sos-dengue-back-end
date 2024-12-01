@@ -27,6 +27,7 @@ export class CreateWastelandResidenceService {
       street: data.street,
       block: data.block,
       complement: data.referencePoint,
+      type: ResidenceTypeEnum.WASTELAND,
     });
 
     if(residenceAlreadyExists){

@@ -29,7 +29,8 @@ export class CreateApartmentResidenceService {
       street: data.street,
       number: data.number,
       block: data.block,
-      apartmentNumber: data.apartmentNumber
+      apartmentNumber: data.apartmentNumber,
+      type: ResidenceTypeEnum.APARTMENT,
     });
 
     if(residenceAlreadyExists){

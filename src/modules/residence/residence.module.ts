@@ -10,6 +10,7 @@ import { CreateApartmentResidenceService } from "./application/services/create-a
 import { FindApartmentResidenceService } from "./application/services/find-apartment-residence.service";
 import { CreateWastelandResidenceService } from "./application/services/create-wasteland-residence.service";
 import { FindWasteLandResidenceService } from "./application/services/find-wasteland-residence.service";
+import { CreateCommercialResidenceService } from "./application/services/create-commercial-residence.service";
 
 @Module({
   imports: [ DIContainer ],
@@ -18,6 +19,7 @@ import { FindWasteLandResidenceService } from "./application/services/find-waste
     CreateHouseResidenceService,
     CreateApartmentResidenceService,
     CreateWastelandResidenceService,
+    CreateCommercialResidenceService,
     FindAllResidenceByCoordinatesService,
     FindHouseResidenceService,
     FindApartmentResidenceService,
