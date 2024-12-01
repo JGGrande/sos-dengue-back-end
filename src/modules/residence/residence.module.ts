@@ -12,6 +12,7 @@ import { CreateWastelandResidenceService } from "./application/services/create-w
 import { FindWasteLandResidenceService } from "./application/services/find-wasteland-residence.service";
 import { CreateCommercialResidenceService } from "./application/services/create-commercial-residence.service";
 import { FindCommercialResidenceService } from "./application/services/find-commercial-residence.service";
+import { CreateOthersResidenceService } from "./application/services/create-others-residence.service";
 
 @Module({
   imports: [ DIContainer ],
@@ -21,6 +22,7 @@ import { FindCommercialResidenceService } from "./application/services/find-comm
     CreateApartmentResidenceService,
     CreateWastelandResidenceService,
     CreateCommercialResidenceService,
+    CreateOthersResidenceService,
     FindAllResidenceByCoordinatesService,
     FindHouseResidenceService,
     FindApartmentResidenceService,
