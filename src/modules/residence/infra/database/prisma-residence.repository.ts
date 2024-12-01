@@ -64,7 +64,7 @@ export class PrismaResidenceRepository implements IResidenceRepository {
         apartmentNumber: `apartment_number = '${value}'`,
         block: `block = '${value}'`,
         cep: `cep = '${value}'`,
-        complement: `complement = '${value}'`,
+        complement: `unaccent("complement") ILIKE unaccent('${value}')`,
         lat: `lat = ${value}`,
         lng: `lng = ${value}`,
         neighborhood: `neighborhood = '${value}'`,

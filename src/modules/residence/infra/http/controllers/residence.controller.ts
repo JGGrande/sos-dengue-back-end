@@ -14,6 +14,8 @@ import { FindResidenceByIdService } from "src/modules/residence/application/serv
 import { CreateApartmentResidenceService } from "src/modules/residence/application/services/create-apartment-residence.service";
 import { CreateApartmentResidenceRequestDto } from "src/modules/residence/application/dtos/create-apartment-residence.dto";
 import { FindApartmentResidenceService } from "src/modules/residence/application/services/find-apartment-residence.service";
+import { CreateWastelandResidenceService } from "src/modules/residence/application/services/create-wasteland-residence.service";
+import { CreateWastelandResidenceRequestDto } from '../../../application/dtos/create-wasteland-residence.dto';
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -21,6 +23,7 @@ export class ResidenceController {
   constructor(
     private readonly createHouseResidenceService: CreateHouseResidenceService,
     private readonly createApartmentResidenceService: CreateApartmentResidenceService,
+    private readonly createWastelandResidenceService: CreateWastelandResidenceService,
     private readonly findAllResidenceByCoordinatesService: FindAllResidenceByCoordinatesService,
     private readonly findHouseResidenceService: FindHouseResidenceService,
     private readonly findApartmentResidenceService: FindApartmentResidenceService,
@@ -38,6 +41,13 @@ export class ResidenceController {
   @Post("/apartment")
   public async createApartment(@Body() body: CreateApartmentResidenceRequestDto) {
     const residence = await this.createApartmentResidenceService.execute(body);
+
+    return residence;
+  }
+
+  @Post("/wasteland")
+  public async createWasteland(@Body() body: CreateWastelandResidenceRequestDto) {
+    const residence = await this.createWastelandResidenceService.execute(body);
 
     return residence;
   }
