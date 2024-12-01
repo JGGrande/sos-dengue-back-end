@@ -22,6 +22,7 @@ import { CreateCommercialResidenceRequestDto } from "src/modules/residence/appli
 import { FindCommercialResidenceService } from "src/modules/residence/application/services/find-commercial-residence.service";
 import { CreateOthersResidenceService } from '../../../application/services/create-others-residence.service';
 import { CreateOthersResidenceRequestDto } from "src/modules/residence/application/dtos/create-others-residence.dto";
+import { FindOthersResidenceService } from "src/modules/residence/application/services/find-others-residence.service";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -37,6 +38,7 @@ export class ResidenceController {
     private readonly findApartmentResidenceService: FindApartmentResidenceService,
     private readonly findWasteLandResidenceService: FindWasteLandResidenceService,
     private readonly findCommercialResidenceService: FindCommercialResidenceService,
+    private readonly findOthersResidenceService: FindOthersResidenceService,
     private readonly updateHouseResidenceService: UpdateHouseResidenceService,
     private readonly findResidenceByIdService: FindResidenceByIdService,
   ){ }
@@ -193,6 +195,31 @@ export class ResidenceController {
       number,
       street,
       block
+    });
+
+    return residences;
+  }
+
+  @Get("/others")
+  public async findOthers(
+    @Req() req: FastifyRequest
+  ) {
+    const findOthersQuerySchema = z.object({
+      cep: z.string(),
+      number: z.string(),
+      street: z.string(),
+      block: z.string().optional(),
+      complement: z.string()
+    });
+
+    const { cep, number, street, block, complement } = findOthersQuerySchema.parse(req.query);
+
+    const residences = await this.findOthersResidenceService.execute({
+      cep,
+      number,
+      street,
+      block,
+      complement
     });
 
     return residences;
