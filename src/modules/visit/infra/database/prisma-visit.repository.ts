@@ -35,16 +35,26 @@ export class PrismaVisitRepository implements IVisitRepository {
   }
 
   public async countFociFoundByUserIdAndStartedAtBetweenDate(userId: number, startDate: Date, endDate: Date): Promise<number> {
-    const count = await this.prisma.visit.count({
+    const countResult = await this.prisma.visit.findMany({
       where: {
         userId,
         startedAt: {
           gte: startDate,
           lte: endDate,
         },
-        sample: { not: null}
+        sample: { not: null }
       }
     });
+
+    const count = countResult.reduce((acc, visit) => {
+      //@ts-ignore
+      if (visit.sample?.tubeCount) {
+        //@ts-ignore
+        return acc + visit.sample?.tubeCount;
+      }
+
+      return acc;
+    }, 0);
 
     return count;
   }
