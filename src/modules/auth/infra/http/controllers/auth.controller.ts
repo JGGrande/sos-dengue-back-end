@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Render, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthUserDto } from "src/modules/auth/application/dtos/auth-user.dto";
 import { AuthUserService } from "src/modules/auth/application/services/auth-user.service";
 import { RefreshTokenUserService } from '../../../application/services/refresh-token-user.service';
@@ -11,6 +11,8 @@ import { ChangeUserPasswordService } from '../../../application/services/change-
 import { JwtService } from "@nestjs/jwt";
 import { Env } from "src/shared/config/config.module";
 import { Public } from "src/shared/decorators/public.decorator";
+import { Throttle } from "@nestjs/throttler";
+
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +24,7 @@ export class AuthController {
     private readonly jwtService: JwtService,
   ) { }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post("user")
   public async authUser(@Body() authUserDto: AuthUserDto){
     const authenticatedUser = await this.authUserService.execute(authUserDto);
@@ -29,6 +32,7 @@ export class AuthController {
     return AuthUserPresenter.toHttpResponse(authenticatedUser);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post("user/recover-password")
   public async recoverUserPassword(
     @Req() request,
@@ -75,6 +79,7 @@ export class AuthController {
     }
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post("user/change-password")
   public async changeUserPassword(
     @Body() { token, password }: ChangeUserPasswordDto

@@ -10,6 +10,8 @@ import { QueueModule } from './shared/queue/queue.module';
 import { ResidenceModule } from './modules/residence/residence.module';
 import { VisitModule } from './modules/visit/visit.module';
 import { IntegrationModule } from './modules/integration/integration.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -38,6 +40,12 @@ import { IntegrationModule } from './modules/integration/integration.module';
       }),
       inject: [ ConfigService ],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 1000
+      }
+    ]),
     QueueModule,
     UserModule,
     AuthModule,
@@ -46,6 +54,11 @@ import { IntegrationModule } from './modules/integration/integration.module';
     IntegrationModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+  }
+  ],
 })
 export class AppModule {}

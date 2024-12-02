@@ -33,6 +33,7 @@
     "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-fastify": "^10.3.10",
+    "@nestjs/throttler": "^6.2.1",
     "@prisma/client": "^5.18.0",
     "@types/bcrypt": "^5.0.2",
     "@types/date-fns": "^2.6.0",
