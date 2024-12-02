@@ -12,6 +12,7 @@ import { VisitModule } from './modules/visit/visit.module';
 import { IntegrationModule } from './modules/integration/integration.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerExceptionFilter } from './shared/exceptions-filters/throttler-exception.filter';
 
 @Module({
   imports: [

@@ -9,6 +9,7 @@ import { Env } from './shared/config/config.module';
 import { ZodExceptionFilter } from './shared/exceptions-filters/zod-exception.filter';
 import { join } from 'path';
 import fastifyMultipart from '@fastify/multipart';
+import { ThrottlerExceptionFilter } from './shared/exceptions-filters/throttler-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -19,6 +20,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   app.useGlobalFilters(new ZodExceptionFilter());
+  app.useGlobalFilters(new ThrottlerExceptionFilter());
 
   app.setGlobalPrefix('api');
 
