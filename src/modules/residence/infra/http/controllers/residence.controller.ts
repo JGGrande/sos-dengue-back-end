@@ -9,7 +9,7 @@ import { AuthGuard } from "src/shared/guards/auth.guard";
 import { FindHouseResidenceService } from "src/modules/residence/application/services/find-house-residence.service";
 import { ParamId } from "src/shared/decorators/param-id.decorator";
 import { UpdateHouseResidenceService } from "src/modules/residence/application/services/update-house-residence.service";
-import { UpdateHouseResidenceRequestDto } from "src/modules/residence/application/dtos/update-house-residence.dto";
+import { UpdateApartmentResidenceRequestDto, UpdateHouseResidenceRequestDto, UpdateWastelandResidenceRequestDto } from "src/modules/residence/application/dtos/update-residence.dto";
 import { FindResidenceByIdService } from "src/modules/residence/application/services/find-residence-by-id.service";
 import { CreateApartmentResidenceService } from "src/modules/residence/application/services/create-apartment-residence.service";
 import { CreateApartmentResidenceRequestDto } from "src/modules/residence/application/dtos/create-apartment-residence.dto";
@@ -23,6 +23,8 @@ import { FindCommercialResidenceService } from "src/modules/residence/applicatio
 import { CreateOthersResidenceService } from '../../../application/services/create-others-residence.service';
 import { CreateOthersResidenceRequestDto } from "src/modules/residence/application/dtos/create-others-residence.dto";
 import { FindOthersResidenceService } from "src/modules/residence/application/services/find-others-residence.service";
+import { UpdateResidenceService } from "src/modules/residence/application/services/update-residence.service";
+import { ResidenceTypeEnum } from "src/modules/residence/domain/enums/residence.enum";
 
 @UseGuards(AuthGuard)
 @Controller("residences")
@@ -39,8 +41,8 @@ export class ResidenceController {
     private readonly findWasteLandResidenceService: FindWasteLandResidenceService,
     private readonly findCommercialResidenceService: FindCommercialResidenceService,
     private readonly findOthersResidenceService: FindOthersResidenceService,
-    private readonly updateHouseResidenceService: UpdateHouseResidenceService,
     private readonly findResidenceByIdService: FindResidenceByIdService,
+    private readonly updateResidenceService: UpdateResidenceService,
   ){ }
 
   @Post("/house")
@@ -87,7 +89,65 @@ export class ResidenceController {
     @Body() body: UpdateHouseResidenceRequestDto,
     @ParamId() id: number
   ) {
-    return this.updateHouseResidenceService.execute({ id, ...body });
+    return this.updateResidenceService.execute({
+      id,
+      apartmentNumber: null,
+      type: ResidenceTypeEnum.HOUSE,
+      ...body
+    });
+  }
+
+  @Put("/apartment/:id")
+  public async updateApartment(
+    @Body() body: UpdateApartmentResidenceRequestDto,
+    @ParamId() id: number
+  ) {
+    return this.updateResidenceService.execute({
+      id,
+      type: ResidenceTypeEnum.APARTMENT,
+      ...body
+    });
+  }
+
+  @Put("/wasteland/:id")
+  public async updateWasteland(
+    @Body() body: UpdateWastelandResidenceRequestDto,
+    @ParamId() id: number
+  ) {
+    return this.updateResidenceService.execute({
+      id,
+      apartmentNumber: null,
+      number: null,
+      complement: body.referencePoint,
+      type: ResidenceTypeEnum.WASTELAND,
+      ...body
+    });
+  }
+
+  @Put("/commercial/:id")
+  public async updateCommercial(
+    @Body() body: UpdateHouseResidenceRequestDto,
+    @ParamId() id: number
+  ) {
+    return this.updateResidenceService.execute({
+      id,
+      apartmentNumber: null,
+      type: ResidenceTypeEnum.COMMERCIAL,
+      ...body
+    });
+  }
+
+  @Put("/others/:id")
+  public async updateOthers(
+    @Body() body: UpdateHouseResidenceRequestDto,
+    @ParamId() id: number
+  ) {
+    return this.updateResidenceService.execute({
+      id,
+      apartmentNumber: null,
+      type: ResidenceTypeEnum.OTHERS,
+      ...body
+    });
   }
 
   @Get("/lat/:lat/lng/:lng")

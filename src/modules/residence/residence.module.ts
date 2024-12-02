@@ -14,6 +14,7 @@ import { CreateCommercialResidenceService } from "./application/services/create-
 import { FindCommercialResidenceService } from "./application/services/find-commercial-residence.service";
 import { CreateOthersResidenceService } from "./application/services/create-others-residence.service";
 import { FindOthersResidenceService } from "./application/services/find-others-residence.service";
+import { UpdateResidenceService } from "./application/services/update-residence.service";
 
 @Module({
   imports: [ DIContainer ],
@@ -31,7 +32,7 @@ import { FindOthersResidenceService } from "./application/services/find-others-r
     FindCommercialResidenceService,
     FindOthersResidenceService,
     FindResidenceByIdService,
-    UpdateHouseResidenceService
+    UpdateResidenceService
   ],
 })
 export class ResidenceModule { }
