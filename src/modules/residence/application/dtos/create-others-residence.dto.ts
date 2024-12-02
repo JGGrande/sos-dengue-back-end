@@ -1,6 +1,6 @@
-import { IsLatitude, IsLongitude, IsNumber, IsOptional, IsString, Length } from "class-validator";
+import { IsLatitude, IsLongitude, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
-export class UpdateHouseResidenceRequestDto {
+export class CreateOthersResidenceRequestDto {
   @IsString({ message: 'CEP informado inválido.' })
   @Length(8, 8, { message: 'CEP deve ter 8 caracteres.' })
   cep: string;
@@ -16,7 +16,7 @@ export class UpdateHouseResidenceRequestDto {
   @IsString({ message: 'Rua informada inválida.' })
   street: string;
 
-  @IsString({ message: 'Número da casa informado inválido.' })
+  @IsString({ message: 'Número da residência informado inválido.' })
   number: string;
 
   @IsString({ message: 'Bairro informado inválido.' })
@@ -25,11 +25,10 @@ export class UpdateHouseResidenceRequestDto {
   @IsString({ message: 'Quadra informada inválida.' })
   streetCourt: string;
 
+  @IsString({ message: 'Complemento informado inválido.' })
+  complement: string;
+
   @IsOptional()
   @IsString({ message: 'Bloco informado inválido.' })
   block: string | null;
-
-  @IsOptional()
-  @IsString({ message: 'Complemento informado inválido.' })
-  complement: string | null;
 }

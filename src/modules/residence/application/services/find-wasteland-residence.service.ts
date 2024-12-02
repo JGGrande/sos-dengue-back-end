@@ -2,27 +2,27 @@ import { Inject, Injectable } from "@nestjs/common";
 import { IResidenceRepository, ResidenceRepositoryToken } from "../../domain/repositories/residence.repository";
 import { ResidenceTypeEnum } from "../../domain/enums/residence.enum";
 
-type FindHouseResidenceServiceProps = {
+type FindWasteLandResidenceServiceProps = {
   cep: string;
-  number: string;
   street: string;
+  referencePoint: string;
   block: string | null;
 }
 
 @Injectable()
-export class FindHouseResidenceService {
+export class FindWasteLandResidenceService {
   constructor(
     @Inject(ResidenceRepositoryToken)
     private readonly residenceRepository: IResidenceRepository
   ) { }
 
-  async execute({ cep, number, street, block }: FindHouseResidenceServiceProps) {
+  async execute({ cep, street, block, referencePoint }: FindWasteLandResidenceServiceProps) {
     const residence = await this.residenceRepository.findOne({
-      cep: cep,
-      street: street,
-      number: number,
+      cep,
+      street,
       block,
-      type: ResidenceTypeEnum.HOUSE
+      complement: referencePoint,
+      type: ResidenceTypeEnum.WASTELAND
     });
 
     return residence;
